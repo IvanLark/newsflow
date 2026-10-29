@@ -3,11 +3,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yifan.newsflow.module.mapper.ArticleMapper">
 
-    <select id="list" resultType="com.yifan.newsflow.module.entity.Article">
+    <select id="pageForApp" resultType="com.yifan.newsflow.module.entity.Article">
         SELECT id, cover_images, title, author, content, publish_time, create_time, update_time, is_deleted
         FROM article
         WHERE is_deleted = 0
         ORDER BY publish_time DESC, id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="pageForConsole" resultType="com.yifan.newsflow.module.entity.Article">
+        SELECT id, cover_images, title, author, content, publish_time, create_time, update_time, is_deleted
+        FROM article
+        WHERE is_deleted = 0
+        ORDER BY id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*)
+        FROM article
+        WHERE is_deleted = 0
     </select>
 
     <select id="getById" resultType="com.yifan.newsflow.module.entity.Article">

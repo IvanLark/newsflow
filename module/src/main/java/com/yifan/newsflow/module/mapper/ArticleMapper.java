@@ -9,7 +9,11 @@ import java.util.List;
 @Mapper
 public interface ArticleMapper {
 
-    List<Article> list();
+    List<Article> pageForApp(@Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    List<Article> pageForConsole(@Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    long countAll();
 
     Article getById(@Param("articleId") Long articleId);
 

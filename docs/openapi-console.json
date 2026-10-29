@@ -1,15 +1,11 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "NewsFlow 接口文档",
-    "description": "NewsFlow APP 与 CONSOLE 的接口定义，对应 docs/接口文档-V1.1.md。",
-    "version": "1.1.0"
+    "title": "NewsFlow CONSOLE 接口文档",
+    "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口文档-V1.2.md 的 CONSOLE 部分。",
+    "version": "1.2.0"
   },
   "servers": [
-    {
-      "url": "http://localhost:8080",
-      "description": "NEWSFLOW APP"
-    },
     {
       "url": "http://localhost:8081",
       "description": "NEWSFLOW CONSOLE"
@@ -17,45 +13,51 @@
   ],
   "tags": [
     {
-      "name": "app",
-      "description": "NEWSFLOW APP，端口 8080"
-    },
-    {
       "name": "console",
       "description": "NEWSFLOW CONSOLE，端口 8081"
     }
   ],
   "paths": {
     "/article/list": {
-      "servers": [
-        {
-          "url": "http://localhost:8080"
-        }
-      ],
       "get": {
         "tags": [
-          "app"
+          "console"
         ],
         "summary": "文章列表",
-        "operationId": "articleList",
-        "parameters": [],
+        "operationId": "consoleArticleList",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "description": "页码，从 1 开始",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "成功",
+            "description": "成功，时间字段格式为 yyyy-MM-dd HH:mm:ss",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ArticleListVo"
+                  "$ref": "#/components/schemas/ConsoleArticleListVo"
                 },
                 "example": {
                   "list": [
                     {
-                      "articleId": 1,
+                      "articleId": 30,
                       "wallImage": "https://a.com/1.jpg",
                       "title": "示例标题",
-                      "publishTime": 1793275200
+                      "publishTime": "2026-10-03 06:00:00",
+                      "createTime": "2026-10-03 05:00:00",
+                      "updateTime": "2026-10-03 05:00:00"
                     }
-                  ]
+                  ],
+                  "total": 30,
+                  "pageSize": 10
                 }
               }
             }
@@ -64,17 +66,12 @@
       }
     },
     "/article/info": {
-      "servers": [
-        {
-          "url": "http://localhost:8080"
-        }
-      ],
       "get": {
         "tags": [
-          "app"
+          "console"
         ],
         "summary": "文章详情",
-        "operationId": "articleInfo",
+        "operationId": "consoleArticleInfo",
         "parameters": [
           {
             "name": "articleId",
@@ -89,11 +86,11 @@
         ],
         "responses": {
           "200": {
-            "description": "成功",
+            "description": "成功，时间字段格式为 yyyy-MM-dd HH:mm:ss",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ArticleInfoVo"
+                  "$ref": "#/components/schemas/ConsoleArticleInfoVo"
                 },
                 "example": {
                   "articleId": 1,
@@ -104,7 +101,9 @@
                   "title": "示例标题",
                   "author": "示例作者",
                   "content": "示例正文",
-                  "publishTime": 1793275200
+                  "publishTime": "2026-10-29 20:00:00",
+                  "createTime": "2026-10-29 19:00:00",
+                  "updateTime": "2026-10-29 19:00:00"
                 }
               }
             }
@@ -113,11 +112,6 @@
       }
     },
     "/article/create": {
-      "servers": [
-        {
-          "url": "http://localhost:8081"
-        }
-      ],
       "get": {
         "tags": [
           "console"
@@ -188,11 +182,6 @@
       }
     },
     "/article/update": {
-      "servers": [
-        {
-          "url": "http://localhost:8081"
-        }
-      ],
       "get": {
         "tags": [
           "console"
@@ -273,11 +262,6 @@
       }
     },
     "/article/delete": {
-      "servers": [
-        {
-          "url": "http://localhost:8081"
-        }
-      ],
       "get": {
         "tags": [
           "console"
@@ -314,13 +298,15 @@
   },
   "components": {
     "schemas": {
-      "ArticleVo": {
+      "ConsoleArticleVo": {
         "type": "object",
         "required": [
           "articleId",
           "wallImage",
           "title",
-          "publishTime"
+          "publishTime",
+          "createTime",
+          "updateTime"
         ],
         "properties": {
           "articleId": {
@@ -337,28 +323,47 @@
             "description": "标题"
           },
           "publishTime": {
-            "type": "integer",
-            "format": "int32",
-            "description": "发布时间，秒级时间戳"
+            "type": "string",
+            "description": "发布时间，格式 yyyy-MM-dd HH:mm:ss"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间，格式 yyyy-MM-dd HH:mm:ss"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "更新时间，格式 yyyy-MM-dd HH:mm:ss"
           }
         }
       },
-      "ArticleListVo": {
+      "ConsoleArticleListVo": {
         "type": "object",
         "required": [
-          "list"
+          "list",
+          "total",
+          "pageSize"
         ],
         "properties": {
           "list": {
             "type": "array",
             "description": "文章列表",
             "items": {
-              "$ref": "#/components/schemas/ArticleVo"
+              "$ref": "#/components/schemas/ConsoleArticleVo"
             }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "description": "文章总数"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "description": "每页条数"
           }
         }
       },
-      "ArticleInfoVo": {
+      "ConsoleArticleInfoVo": {
         "type": "object",
         "required": [
           "articleId",
@@ -366,7 +371,9 @@
           "title",
           "author",
           "content",
-          "publishTime"
+          "publishTime",
+          "createTime",
+          "updateTime"
         ],
         "properties": {
           "articleId": {
@@ -394,9 +401,16 @@
             "description": "正文"
           },
           "publishTime": {
-            "type": "integer",
-            "format": "int32",
-            "description": "发布时间，秒级时间戳"
+            "type": "string",
+            "description": "发布时间，格式 yyyy-MM-dd HH:mm:ss"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间，格式 yyyy-MM-dd HH:mm:ss"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "更新时间，格式 yyyy-MM-dd HH:mm:ss"
           }
         }
       }

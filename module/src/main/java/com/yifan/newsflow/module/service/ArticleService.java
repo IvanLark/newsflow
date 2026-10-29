@@ -13,12 +13,26 @@ import java.util.List;
 @Service
 public class ArticleService {
 
+    public static final int PAGE_SIZE = 10;
+
     @Autowired
     private ArticleMapper articleMapper;
 
-    public List<Article> list() {
-        log.info("查询文章列表");
-        return articleMapper.list();
+    public List<Article> pageForApp(int page) {
+        int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
+        log.info("查询 APP 文章列表，page={}, offset={}", page, offset);
+        return articleMapper.pageForApp(offset, PAGE_SIZE + 1);
+    }
+
+    public List<Article> pageForConsole(int page) {
+        int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
+        log.info("查询后台文章列表，page={}, offset={}", page, offset);
+        return articleMapper.pageForConsole(offset, PAGE_SIZE);
+    }
+
+    public long countAll() {
+        log.info("统计文章总数");
+        return articleMapper.countAll();
     }
 
     public Article getById(Long articleId) {

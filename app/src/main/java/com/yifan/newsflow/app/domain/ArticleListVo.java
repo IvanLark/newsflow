@@ -10,5 +10,6 @@ import java.util.List;
 public class ArticleListVo {
 
     private List<ArticleVo> list;
+    private Boolean isEnd;
 
 }
