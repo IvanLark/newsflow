@@ -26,13 +26,13 @@ public class ArticleService {
         return articleMapper.getById(articleId);
     }
 
-    public boolean create(Article article) {
+    public Long create(Article article) {
         int now = TimeUtils.currentSeconds();
         article.setCreateTime(now)
                 .setUpdateTime(now)
                 .setIsDeleted(0);
         log.info("新增文章，title={}", article.getTitle());
-        return articleMapper.insert(article) > 0;
+        return articleMapper.insert(article) > 0 ? article.getId() : null;
     }
 
     public boolean update(Article article) {

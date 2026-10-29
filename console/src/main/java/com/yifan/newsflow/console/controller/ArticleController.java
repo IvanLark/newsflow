@@ -25,7 +25,8 @@ public class ArticleController {
                 .setAuthor(author)
                 .setContent(content)
                 .setPublishTime(publishTime);
-        return articleService.create(article) ? "成功" : "失败";
+        Long articleId = articleService.create(article);
+        return articleId != null ? "自增id为：" + articleId : "失败";
     }
 
     @RequestMapping("/article/update")

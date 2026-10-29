@@ -16,7 +16,7 @@
         WHERE id = #{articleId} AND is_deleted = 0
     </select>
 
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="article.id">
         INSERT INTO article (cover_images, title, author, content, publish_time, create_time, update_time, is_deleted)
         VALUES (#{article.coverImages}, #{article.title}, #{article.author}, #{article.content},
                 #{article.publishTime}, #{article.createTime}, #{article.updateTime}, #{article.isDeleted})
