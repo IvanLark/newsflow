@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yifan.newsflow.module.mapper.OgnlDemoMapper">
+
+    <select id="getById" resultType="com.yifan.newsflow.module.entity.OgnlDemo">
+        SELECT id, name, status, create_time, update_time
+        FROM ognl_demo
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="demo.id">
+        INSERT INTO ognl_demo (name,
+        <if test="demo.status != ''">
+            status,
+        </if>
+        create_time, update_time)
+        VALUES (#{demo.name},
+        <if test="demo.status != ''">
+            #{demo.status},
+        </if>
+        #{demo.createTime}, #{demo.updateTime})
+    </insert>
+
+    <update id="update">
+        UPDATE ognl_demo
+        <set>
+            <if test="demo.name != null and demo.name != ''">
+                name = #{demo.name},
+            </if>
+            <if test="demo.status != ''">
+                status = #{demo.status},
+            </if>
+            <if test="demo.updateTime != null">
+                update_time = #{demo.updateTime},
+            </if>
+        </set>
+        WHERE id = #{demo.id}
+    </update>
+
+</mapper>
