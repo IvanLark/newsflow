@@ -40,7 +40,7 @@ public class ArticleService {
         return articleMapper.getById(articleId);
     }
 
-    public Long edit(Long articleId, String coverImages, String title, String author, String content, Integer publishTime) {
+    public Long edit(Long articleId, String coverImages, String title, String author, String content, String publishTime) {
         if (coverImages == null || coverImages.isBlank()) {
             throw new RuntimeException("cover images is required");
         }
@@ -53,7 +53,11 @@ public class ArticleService {
         if (content == null || content.isBlank()) {
             throw new RuntimeException("content is required");
         }
-        if (publishTime == null || publishTime <= 0) {
+        if (publishTime == null || publishTime.isBlank()) {
+            throw new RuntimeException("publish time is required");
+        }
+        int publishSeconds = TimeUtils.parseDate(publishTime);
+        if (publishSeconds <= 0) {
             throw new RuntimeException("publish time must be positive");
         }
         int now = TimeUtils.currentSeconds();
@@ -62,7 +66,7 @@ public class ArticleService {
                 .setTitle(title)
                 .setAuthor(author)
                 .setContent(content)
-                .setPublishTime(publishTime)
+                .setPublishTime(publishSeconds)
                 .setUpdateTime(now)
                 .setIsDeleted(0);
         if (articleId == null) {

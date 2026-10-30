@@ -66,7 +66,7 @@ public class ArticleController {
                          @RequestParam("title") String title,
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
-                         @RequestParam("publishTime") Integer publishTime) {
+                         @RequestParam("publishTime") String publishTime) {
         Long articleId;
         try {
             articleId = articleService.edit(null, coverImages, title.trim(), author.trim(), content, publishTime);
@@ -83,7 +83,7 @@ public class ArticleController {
                          @RequestParam("title") String title,
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
-                         @RequestParam("publishTime") Integer publishTime) {
+                         @RequestParam("publishTime") String publishTime) {
         Long updatedId;
         try {
             updatedId = articleService.edit(articleId, coverImages, title.trim(), author.trim(), content, publishTime);

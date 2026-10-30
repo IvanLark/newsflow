@@ -168,10 +168,11 @@
             "name": "publishTime",
             "in": "query",
             "required": true,
-            "description": "发布时间，秒级时间戳",
+            "description": "发布时间，格式 yyyy-MM-dd",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "date",
+              "example": "2026-10-29"
             }
           }
         ],
@@ -248,10 +249,11 @@
             "name": "publishTime",
             "in": "query",
             "required": true,
-            "description": "发布时间，秒级时间戳",
+            "description": "发布时间，格式 yyyy-MM-dd",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "date",
+              "example": "2026-10-29"
             }
           }
         ],
