@@ -34,18 +34,6 @@
         </if>
     </select>
 
-    <select id="existsById" resultType="java.lang.Long">
-        SELECT id
-        FROM article
-        WHERE id = #{articleId}
-    </select>
-
-    <select id="getById" resultType="com.yifan.newsflow.module.entity.Article">
-        SELECT id, cover_images, title, author, content, publish_time, create_time, update_time, is_deleted
-        FROM article
-        WHERE id = #{articleId} AND is_deleted = 0
-    </select>
-
     <insert id="insert" useGeneratedKeys="true" keyProperty="article.id">
         INSERT INTO article(
         <if test="article.coverImages != null and article.coverImages != ''">cover_images,</if>
@@ -92,12 +80,6 @@
             is_deleted = #{article.isDeleted}
         </set>
         WHERE id = #{article.id}
-    </update>
-
-    <update id="delete">
-        UPDATE article
-        SET is_deleted = 1, update_time = #{updateTime}
-        WHERE id = #{articleId} AND is_deleted = 0
     </update>
 
 </mapper>

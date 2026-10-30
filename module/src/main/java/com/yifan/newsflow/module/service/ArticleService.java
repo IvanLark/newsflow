@@ -42,6 +42,26 @@ public class ArticleService {
         return articleMapper.getById(articleId);
     }
 
+    public Article extractById(Long articleId) {
+        log.info("提取文章记录，articleId={}", articleId);
+        return articleMapper.extractById(articleId);
+    }
+
+    public int insert(Article article) {
+        log.info("插入文章，title={}", article.getTitle());
+        return articleMapper.insert(article);
+    }
+
+    public int update(Article article) {
+        log.info("更新文章，articleId={}", article.getId());
+        return articleMapper.update(article);
+    }
+
+    public boolean delete(Long articleId) {
+        log.info("删除文章，articleId={}", articleId);
+        return articleMapper.delete(articleId, TimeUtils.currentSeconds()) > 0;
+    }
+
     public Long edit(Long articleId, String coverImages, String title, String author, String content, String publishTime) {
         if (coverImages == null || coverImages.isBlank()) {
             throw new RuntimeException("cover images is required");
@@ -62,19 +82,17 @@ public class ArticleService {
         if (publishSeconds <= 0) {
             throw new RuntimeException("publish time must be positive");
         }
-        int now = TimeUtils.currentSeconds();
         Article article = new Article()
                 .setCoverImages(coverImages)
                 .setTitle(title)
                 .setAuthor(author)
                 .setContent(content)
                 .setPublishTime(publishSeconds)
-                .setUpdateTime(now)
                 .setIsDeleted(0);
         if (articleId == null) {
-            article.setCreateTime(now);
+            article.setCreateTime(TimeUtils.currentSeconds());
             log.info("新增文章，title={}", title);
-            if (articleMapper.insert(article) <= 0) {
+            if (insert(article) <= 0) {
                 throw new RuntimeException("insert article failed");
             }
             return article.getId();
@@ -82,20 +100,14 @@ public class ArticleService {
         if (articleId <= 0) {
             throw new RuntimeException("article id must be positive");
         }
-        if (articleMapper.existsById(articleId) == null) {
+        if (extractById(articleId) == null) {
             throw new RuntimeException("article not found: " + articleId);
         }
         article.setId(articleId);
-        log.info("修改文章，articleId={}", articleId);
-        if (articleMapper.update(article) <= 0) {
+        if (update(article) <= 0) {
             throw new RuntimeException("update article failed: " + articleId);
         }
         return articleId;
-    }
-
-    public boolean delete(Long articleId) {
-        log.info("删除文章，articleId={}", articleId);
-        return articleMapper.delete(articleId, TimeUtils.currentSeconds()) > 0;
     }
 
 }
