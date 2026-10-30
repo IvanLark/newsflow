@@ -1,15 +1,11 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "NewsFlow 接口文档",
-    "description": "NewsFlow APP 与 CONSOLE 的接口定义，对应 docs/接口设计文档-V1.1.md。",
-    "version": "1.1.0"
+    "title": "NewsFlow CONSOLE 接口文档",
+    "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口设计文档-V1.0.md 的 CONSOLE 部分。",
+    "version": "1.0.0"
   },
   "servers": [
-    {
-      "url": "http://localhost:8080",
-      "description": "NEWSFLOW APP"
-    },
     {
       "url": "http://localhost:8081",
       "description": "NEWSFLOW CONSOLE"
@@ -17,101 +13,11 @@
   ],
   "tags": [
     {
-      "name": "app",
-      "description": "NEWSFLOW APP，端口 8080"
-    },
-    {
       "name": "console",
       "description": "NEWSFLOW CONSOLE，端口 8081"
     }
   ],
   "paths": {
-    "/article/list": {
-      "servers": [
-        {
-          "url": "http://localhost:8080"
-        }
-      ],
-      "get": {
-        "tags": [
-          "app"
-        ],
-        "summary": "文章列表",
-        "operationId": "articleList",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "成功",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArticleListVo"
-                },
-                "example": {
-                  "list": [
-                    {
-                      "articleId": 1,
-                      "wallImage": "https://a.com/1.jpg",
-                      "title": "示例标题",
-                      "publishTime": 1793275200
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/article/info": {
-      "servers": [
-        {
-          "url": "http://localhost:8080"
-        }
-      ],
-      "get": {
-        "tags": [
-          "app"
-        ],
-        "summary": "文章详情",
-        "operationId": "articleInfo",
-        "parameters": [
-          {
-            "name": "articleId",
-            "in": "query",
-            "required": true,
-            "description": "文章 ID",
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "成功",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArticleInfoVo"
-                },
-                "example": {
-                  "articleId": 1,
-                  "coverImages": [
-                    "https://a.com/1.jpg",
-                    "https://a.com/2.jpg"
-                  ],
-                  "title": "示例标题",
-                  "author": "示例作者",
-                  "content": "示例正文",
-                  "publishTime": 1793275200
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/article/create": {
       "servers": [
         {
@@ -175,12 +81,12 @@
         ],
         "responses": {
           "200": {
-            "description": "成功返回「自增id为：xxx」，失败返回「失败」",
+            "description": "成功 or 失败",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "string",
-                  "example": "自增id为：31"
+                  "example": "成功"
                 }
               }
             }
@@ -309,96 +215,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "ArticleVo": {
-        "type": "object",
-        "required": [
-          "articleId",
-          "wallImage",
-          "title",
-          "publishTime"
-        ],
-        "properties": {
-          "articleId": {
-            "type": "integer",
-            "format": "int64",
-            "description": "文章 ID"
-          },
-          "wallImage": {
-            "type": "string",
-            "description": "轮播图第一张"
-          },
-          "title": {
-            "type": "string",
-            "description": "标题"
-          },
-          "publishTime": {
-            "type": "integer",
-            "format": "int32",
-            "description": "发布时间，秒级时间戳"
-          }
-        }
-      },
-      "ArticleListVo": {
-        "type": "object",
-        "required": [
-          "list"
-        ],
-        "properties": {
-          "list": {
-            "type": "array",
-            "description": "文章列表",
-            "items": {
-              "$ref": "#/components/schemas/ArticleVo"
-            }
-          }
-        }
-      },
-      "ArticleInfoVo": {
-        "type": "object",
-        "required": [
-          "articleId",
-          "coverImages",
-          "title",
-          "author",
-          "content",
-          "publishTime"
-        ],
-        "properties": {
-          "articleId": {
-            "type": "integer",
-            "format": "int64",
-            "description": "文章 ID"
-          },
-          "coverImages": {
-            "type": "array",
-            "description": "轮播图",
-            "items": {
-              "type": "string"
-            }
-          },
-          "title": {
-            "type": "string",
-            "description": "标题"
-          },
-          "author": {
-            "type": "string",
-            "description": "作者"
-          },
-          "content": {
-            "type": "string",
-            "description": "正文"
-          },
-          "publishTime": {
-            "type": "integer",
-            "format": "int32",
-            "description": "发布时间，秒级时间戳"
           }
         }
       }
