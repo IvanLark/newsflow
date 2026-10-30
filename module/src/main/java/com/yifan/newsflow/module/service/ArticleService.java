@@ -26,14 +26,14 @@ public class ArticleService {
         return articleMapper.getById(articleId);
     }
 
-    public boolean create(String coverImages, String title, String author, String content, Integer publishTime) {
+    public boolean create(String coverImages, String title, String author, String content, String publishTime) {
         int now = TimeUtils.currentSeconds();
         Article article = new Article()
                 .setCoverImages(coverImages)
                 .setTitle(title)
                 .setAuthor(author)
                 .setContent(content)
-                .setPublishTime(publishTime)
+                .setPublishTime(TimeUtils.parseDate(publishTime))
                 .setCreateTime(now)
                 .setUpdateTime(now)
                 .setIsDeleted(0);
@@ -41,14 +41,14 @@ public class ArticleService {
         return articleMapper.insert(article) > 0;
     }
 
-    public boolean update(Long articleId, String coverImages, String title, String author, String content, Integer publishTime) {
+    public boolean update(Long articleId, String coverImages, String title, String author, String content, String publishTime) {
         Article article = new Article()
                 .setId(articleId)
                 .setCoverImages(coverImages)
                 .setTitle(title)
                 .setAuthor(author)
                 .setContent(content)
-                .setPublishTime(publishTime)
+                .setPublishTime(TimeUtils.parseDate(publishTime))
                 .setUpdateTime(TimeUtils.currentSeconds())
                 .setIsDeleted(0);
         log.info("修改文章，articleId={}", articleId);
