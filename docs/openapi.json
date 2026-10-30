@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NewsFlow 接口文档",
-    "description": "NewsFlow APP 与 CONSOLE 的接口定义，对应 docs/接口文档-V1.1.md。",
+    "description": "NewsFlow APP 与 CONSOLE 的接口定义，对应 docs/接口设计文档-V1.1.md。",
     "version": "1.1.0"
   },
   "servers": [
