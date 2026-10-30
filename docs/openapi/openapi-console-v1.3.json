@@ -178,7 +178,7 @@
         ],
         "responses": {
           "200": {
-            "description": "成功返回文章 id，失败返回「新增失败、错误信息」",
+            "description": "成功返回文章 id，失败返回「新增失败：错误信息」",
             "content": {
               "application/json": {
                 "schema": {
@@ -259,7 +259,7 @@
         ],
         "responses": {
           "200": {
-            "description": "成功返回文章 id，失败返回「更新失败、错误信息」",
+            "description": "成功返回文章 id，失败返回「更新失败：错误信息」",
             "content": {
               "application/json": {
                 "schema": {

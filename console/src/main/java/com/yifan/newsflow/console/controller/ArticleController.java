@@ -72,7 +72,7 @@ public class ArticleController {
             articleId = articleService.edit(null, coverImages, title.trim(), author.trim(), content, publishTime);
         } catch (RuntimeException e) {
             log.error("新增文章失败", e);
-            return "新增失败、" + e.getMessage();
+            return "新增失败：" + e.getMessage();
         }
         return String.valueOf(articleId);
     }
@@ -89,7 +89,7 @@ public class ArticleController {
             updatedId = articleService.edit(articleId, coverImages, title.trim(), author.trim(), content, publishTime);
         } catch (RuntimeException e) {
             log.error("修改文章失败", e);
-            return "更新失败、" + e.getMessage();
+            return "更新失败：" + e.getMessage();
         }
         return String.valueOf(updatedId);
     }
