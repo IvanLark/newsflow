@@ -13,6 +13,8 @@ import java.util.List;
 @Service
 public class ArticleService {
 
+    private static final String PUBLISH_TIME_PATTERN = "yyyy-MM-dd";
+
     @Autowired
     private ArticleMapper articleMapper;
 
@@ -33,7 +35,7 @@ public class ArticleService {
                 .setTitle(title)
                 .setAuthor(author)
                 .setContent(content)
-                .setPublishTime(TimeUtils.parseDate(publishTime))
+                .setPublishTime(TimeUtils.parseDate(publishTime, PUBLISH_TIME_PATTERN))
                 .setCreateTime(now)
                 .setUpdateTime(now)
                 .setIsDeleted(0);
@@ -48,7 +50,7 @@ public class ArticleService {
                 .setTitle(title)
                 .setAuthor(author)
                 .setContent(content)
-                .setPublishTime(TimeUtils.parseDate(publishTime))
+                .setPublishTime(TimeUtils.parseDate(publishTime, PUBLISH_TIME_PATTERN))
                 .setUpdateTime(TimeUtils.currentSeconds())
                 .setIsDeleted(0);
         log.info("修改文章，articleId={}", articleId);
