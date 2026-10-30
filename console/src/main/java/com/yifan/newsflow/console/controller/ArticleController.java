@@ -6,6 +6,7 @@ import com.yifan.newsflow.console.domain.ConsoleArticleVo;
 import com.yifan.newsflow.module.entity.Article;
 import com.yifan.newsflow.module.service.ArticleService;
 import com.yifan.newsflow.module.util.TimeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 public class ArticleController {
 
@@ -64,8 +66,13 @@ public class ArticleController {
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
                          @RequestParam("publishTime") String publishTime) {
-        Long articleId = articleService.create(coverImages, title, author, content, publishTime);
-        return articleId != null ? "自增id为：" + articleId : "失败";
+        try {
+            Long articleId = articleService.create(coverImages, title, author, content, publishTime);
+            return articleId != null ? "自增id为：" + articleId : "失败";
+        } catch (RuntimeException e) {
+            log.error("新增文章失败", e);
+            return "失败";
+        }
     }
 
     @RequestMapping("/article/update")
@@ -75,7 +82,12 @@ public class ArticleController {
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
                          @RequestParam("publishTime") String publishTime) {
-        return articleService.update(articleId, coverImages, title, author, content, publishTime) ? "成功" : "失败";
+        try {
+            return articleService.update(articleId, coverImages, title, author, content, publishTime) ? "成功" : "失败";
+        } catch (RuntimeException e) {
+            log.error("修改文章失败", e);
+            return "失败";
+        }
     }
 
     @RequestMapping("/article/delete")
