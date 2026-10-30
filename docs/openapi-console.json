@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NewsFlow CONSOLE 接口文档",
-    "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口设计文档-V1.2.md 的 CONSOLE 部分。",
-    "version": "1.2.0"
+    "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口设计文档-V1.3.md 的 CONSOLE 部分。",
+    "version": "1.3.0"
   },
   "servers": [
     {
@@ -34,6 +34,15 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "description": "标题关键词，非必传",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -168,12 +177,12 @@
         ],
         "responses": {
           "200": {
-            "description": "成功返回「自增id为：xxx」，失败返回「失败」",
+            "description": "成功返回文章 id，失败返回「新增失败、错误信息」",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "string",
-                  "example": "自增id为：31"
+                  "example": "31"
                 }
               }
             }
@@ -248,12 +257,12 @@
         ],
         "responses": {
           "200": {
-            "description": "成功返回「成功」，失败返回「失败」",
+            "description": "成功返回文章 id，失败返回「更新失败、错误信息」",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "string",
-                  "example": "成功"
+                  "example": "31"
                 }
               }
             }
@@ -354,7 +363,7 @@
           "total": {
             "type": "integer",
             "format": "int64",
-            "description": "文章总数"
+            "description": "符合关键词的文章总数"
           },
           "pageSize": {
             "type": "integer",

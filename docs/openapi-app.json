@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NewsFlow APP 接口文档",
-    "description": "NewsFlow APP 的接口定义，对应 docs/接口设计文档-V1.2.md 的 APP 部分。",
-    "version": "1.2.0"
+    "description": "NewsFlow APP 的接口定义，对应 docs/接口设计文档-V1.3.md 的 APP 部分。",
+    "version": "1.3.0"
   },
   "servers": [
     {
@@ -34,6 +34,15 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "description": "标题关键词，非必传",
+            "schema": {
+              "type": "string"
             }
           }
         ],
