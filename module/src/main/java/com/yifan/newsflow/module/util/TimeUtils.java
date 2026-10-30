@@ -13,13 +13,13 @@ public class TimeUtils {
         return (int) (System.currentTimeMillis() / 1000);
     }
 
-    public static int parseDate(String value) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    public static int parseDate(String value, String pattern) {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
         format.setLenient(false);
         ParsePosition position = new ParsePosition(0);
         Date date = format.parse(value, position);
         if (date == null || position.getIndex() != value.length()) {
-            throw new RuntimeException("publish time format must be yyyy-MM-dd");
+            throw new RuntimeException("publish time format must be " + pattern);
         }
         return (int) (date.getTime() / 1000);
     }
