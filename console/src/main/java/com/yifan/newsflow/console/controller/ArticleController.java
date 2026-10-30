@@ -1,6 +1,5 @@
 package com.yifan.newsflow.console.controller;
 
-import com.yifan.newsflow.module.entity.Article;
 import com.yifan.newsflow.module.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,13 +18,7 @@ public class ArticleController {
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
                          @RequestParam("publishTime") Integer publishTime) {
-        Article article = new Article()
-                .setCoverImages(coverImages)
-                .setTitle(title)
-                .setAuthor(author)
-                .setContent(content)
-                .setPublishTime(publishTime);
-        Long articleId = articleService.create(article);
+        Long articleId = articleService.create(coverImages, title, author, content, publishTime);
         return articleId != null ? "自增id为：" + articleId : "失败";
     }
 
@@ -36,14 +29,7 @@ public class ArticleController {
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
                          @RequestParam("publishTime") Integer publishTime) {
-        Article article = new Article()
-                .setId(articleId)
-                .setCoverImages(coverImages)
-                .setTitle(title)
-                .setAuthor(author)
-                .setContent(content)
-                .setPublishTime(publishTime);
-        return articleService.update(article) ? "成功" : "失败";
+        return articleService.update(articleId, coverImages, title, author, content, publishTime) ? "成功" : "失败";
     }
 
     @RequestMapping("/article/delete")
