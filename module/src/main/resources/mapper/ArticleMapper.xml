@@ -7,6 +7,9 @@
         SELECT id, cover_images, title, author, content, publish_time, create_time, update_time, is_deleted
         FROM article
         WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
         ORDER BY publish_time DESC, id DESC
         LIMIT #{offset}, #{pageSize}
     </select>
@@ -15,6 +18,9 @@
         SELECT id, cover_images, title, author, content, publish_time, create_time, update_time, is_deleted
         FROM article
         WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
         ORDER BY id DESC
         LIMIT #{offset}, #{pageSize}
     </select>
@@ -23,6 +29,15 @@
         SELECT COUNT(*)
         FROM article
         WHERE is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            AND title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </select>
+
+    <select id="existsById" resultType="java.lang.Long">
+        SELECT id
+        FROM article
+        WHERE id = #{articleId}
     </select>
 
     <select id="getById" resultType="com.yifan.newsflow.module.entity.Article">
@@ -60,7 +75,7 @@
             </if>
             is_deleted = #{article.isDeleted}
         </set>
-        WHERE id = #{article.id} AND is_deleted = 0
+        WHERE id = #{article.id}
     </update>
 
     <update id="delete">

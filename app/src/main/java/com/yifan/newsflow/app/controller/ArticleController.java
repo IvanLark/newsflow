@@ -24,8 +24,9 @@ public class ArticleController {
     private ArticleService articleService;
 
     @RequestMapping("/article/list")
-    public ArticleListVo list(@RequestParam("page") int page) {
-        List<Article> articles = articleService.pageForApp(page);
+    public ArticleListVo list(@RequestParam("page") int page,
+                              @RequestParam(value = "keyword", required = false) String keyword) {
+        List<Article> articles = articleService.pageForApp(page, keyword);
         boolean isEnd = articles.size() <= ArticleService.PAGE_SIZE;
         if (!isEnd) {
             articles = articles.subList(0, ArticleService.PAGE_SIZE);

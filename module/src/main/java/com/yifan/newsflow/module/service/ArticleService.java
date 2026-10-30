@@ -18,21 +18,21 @@ public class ArticleService {
     @Autowired
     private ArticleMapper articleMapper;
 
-    public List<Article> pageForApp(int page) {
+    public List<Article> pageForApp(int page, String keyword) {
         int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
-        log.info("查询 APP 文章列表，page={}, offset={}", page, offset);
-        return articleMapper.pageForApp(offset, PAGE_SIZE + 1);
+        log.info("查询 APP 文章列表，page={}, offset={}, keyword={}", page, offset, keyword);
+        return articleMapper.pageForApp(offset, PAGE_SIZE + 1, keyword);
     }
 
-    public List<Article> pageForConsole(int page) {
+    public List<Article> pageForConsole(int page, String keyword) {
         int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
-        log.info("查询后台文章列表，page={}, offset={}", page, offset);
-        return articleMapper.pageForConsole(offset, PAGE_SIZE);
+        log.info("查询后台文章列表，page={}, offset={}, keyword={}", page, offset, keyword);
+        return articleMapper.pageForConsole(offset, PAGE_SIZE, keyword);
     }
 
-    public long countAll() {
-        log.info("统计文章总数");
-        return articleMapper.countAll();
+    public long countAll(String keyword) {
+        log.info("统计文章总数，keyword={}", keyword);
+        return articleMapper.countAll(keyword);
     }
 
     public Article getById(Long articleId) {
@@ -40,7 +40,22 @@ public class ArticleService {
         return articleMapper.getById(articleId);
     }
 
-    public Long create(String coverImages, String title, String author, String content, Integer publishTime) {
+    public Long edit(Long articleId, String coverImages, String title, String author, String content, Integer publishTime) {
+        if (coverImages == null || coverImages.isBlank()) {
+            throw new RuntimeException("cover images is required");
+        }
+        if (title == null || title.isBlank()) {
+            throw new RuntimeException("title is required");
+        }
+        if (author == null || author.isBlank()) {
+            throw new RuntimeException("author is required");
+        }
+        if (content == null || content.isBlank()) {
+            throw new RuntimeException("content is required");
+        }
+        if (publishTime == null || publishTime <= 0) {
+            throw new RuntimeException("publish time must be positive");
+        }
         int now = TimeUtils.currentSeconds();
         Article article = new Article()
                 .setCoverImages(coverImages)
@@ -48,25 +63,28 @@ public class ArticleService {
                 .setAuthor(author)
                 .setContent(content)
                 .setPublishTime(publishTime)
-                .setCreateTime(now)
                 .setUpdateTime(now)
                 .setIsDeleted(0);
-        log.info("新增文章，title={}", title);
-        return articleMapper.insert(article) > 0 ? article.getId() : null;
-    }
-
-    public boolean update(Long articleId, String coverImages, String title, String author, String content, Integer publishTime) {
-        Article article = new Article()
-                .setId(articleId)
-                .setCoverImages(coverImages)
-                .setTitle(title)
-                .setAuthor(author)
-                .setContent(content)
-                .setPublishTime(publishTime)
-                .setUpdateTime(TimeUtils.currentSeconds())
-                .setIsDeleted(0);
+        if (articleId == null) {
+            article.setCreateTime(now);
+            log.info("新增文章，title={}", title);
+            if (articleMapper.insert(article) <= 0) {
+                throw new RuntimeException("insert article failed");
+            }
+            return article.getId();
+        }
+        if (articleId <= 0) {
+            throw new RuntimeException("article id must be positive");
+        }
+        if (articleMapper.existsById(articleId) == null) {
+            throw new RuntimeException("article not found: " + articleId);
+        }
+        article.setId(articleId);
         log.info("修改文章，articleId={}", articleId);
-        return articleMapper.update(article) > 0;
+        if (articleMapper.update(article) <= 0) {
+            throw new RuntimeException("update article failed: " + articleId);
+        }
+        return articleId;
     }
 
     public boolean delete(Long articleId) {
