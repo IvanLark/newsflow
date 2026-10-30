@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public String handleRuntimeException(RuntimeException e) {
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception e) {
         log.error("未处理的异常", e);
         return "网络繁忙";
     }

@@ -27,10 +27,7 @@ public class ArticleController {
     public ArticleListVo list(@RequestParam("page") int page,
                               @RequestParam(value = "keyword", required = false) String keyword) {
         List<Article> articles = articleService.pageForApp(page, keyword);
-        boolean isEnd = articles.size() <= ArticleService.PAGE_SIZE;
-        if (!isEnd) {
-            articles = articles.subList(0, ArticleService.PAGE_SIZE);
-        }
+        Boolean isEnd = articles.size() < ArticleService.PAGE_SIZE;
         List<ArticleVo> list = new ArrayList<>();
         for (Article article : articles) {
             list.add(new ArticleVo()

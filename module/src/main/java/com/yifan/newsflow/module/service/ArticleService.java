@@ -23,7 +23,7 @@ public class ArticleService {
     public List<Article> pageForApp(int page, String keyword) {
         int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
         log.info("查询 APP 文章列表，page={}, offset={}, keyword={}", page, offset, keyword);
-        return articleMapper.pageForApp(offset, PAGE_SIZE + 1, keyword);
+        return articleMapper.pageForApp(offset, PAGE_SIZE, keyword);
     }
 
     public List<Article> pageForConsole(int page, String keyword) {
