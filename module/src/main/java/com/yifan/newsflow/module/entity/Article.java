@@ -1,5 +1,6 @@
 package com.yifan.newsflow.module.entity;
 
+import com.yifan.newsflow.module.util.TimeUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -14,7 +15,7 @@ public class Article {
     private String content;
     private Integer publishTime;
     private Integer createTime;
-    private Integer updateTime;
+    private Integer updateTime = TimeUtils.currentSeconds();
     private Integer isDeleted;
 
 }
