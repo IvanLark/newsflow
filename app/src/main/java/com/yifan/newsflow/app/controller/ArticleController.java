@@ -5,6 +5,7 @@ import com.yifan.newsflow.app.domain.ArticleListVo;
 import com.yifan.newsflow.app.domain.ArticleVo;
 import com.yifan.newsflow.module.entity.Article;
 import com.yifan.newsflow.module.service.ArticleService;
+import com.yifan.newsflow.module.util.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,9 @@ import java.util.List;
 
 @RestController
 public class ArticleController {
+
+    private static final String LIST_TIME_PATTERN = "MM-dd";
+    private static final String INFO_TIME_PATTERN = "yyyy-MM-dd";
 
     @Autowired
     private ArticleService articleService;
@@ -28,7 +32,7 @@ public class ArticleController {
                     .setArticleId(article.getId())
                     .setWallImage(article.getCoverImages().split("\\$")[0])
                     .setTitle(article.getTitle())
-                    .setPublishTime(article.getPublishTime()));
+                    .setPublishTime(TimeUtils.format(article.getPublishTime(), LIST_TIME_PATTERN)));
         }
         return new ArticleListVo().setList(list);
     }
@@ -45,7 +49,7 @@ public class ArticleController {
                 .setTitle(article.getTitle())
                 .setAuthor(article.getAuthor())
                 .setContent(article.getContent())
-                .setPublishTime(article.getPublishTime());
+                .setPublishTime(TimeUtils.format(article.getPublishTime(), INFO_TIME_PATTERN));
     }
 
 }
