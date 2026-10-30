@@ -47,9 +47,25 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="article.id">
-        INSERT INTO article (cover_images, title, author, content, publish_time, create_time, update_time, is_deleted)
-        VALUES (#{article.coverImages}, #{article.title}, #{article.author}, #{article.content},
-                #{article.publishTime}, #{article.createTime}, #{article.updateTime}, #{article.isDeleted})
+        INSERT INTO article(
+        <if test="article.coverImages != null and article.coverImages != ''">cover_images,</if>
+        <if test="article.title != null and article.title != ''">title,</if>
+        <if test="article.author != null and article.author != ''">author,</if>
+        <if test="article.content != null and article.content != ''">content,</if>
+        <if test="article.publishTime != null">publish_time,</if>
+        <if test="article.createTime != null">create_time,</if>
+        <if test="article.updateTime != null">update_time,</if>
+        is_deleted
+        ) VALUES (
+        <if test="article.coverImages != null and article.coverImages != ''">#{article.coverImages},</if>
+        <if test="article.title != null and article.title != ''">#{article.title},</if>
+        <if test="article.author != null and article.author != ''">#{article.author},</if>
+        <if test="article.content != null and article.content != ''">#{article.content},</if>
+        <if test="article.publishTime != null">#{article.publishTime},</if>
+        <if test="article.createTime != null">#{article.createTime},</if>
+        <if test="article.updateTime != null">#{article.updateTime},</if>
+        #{article.isDeleted}
+        )
     </insert>
 
     <update id="update">
