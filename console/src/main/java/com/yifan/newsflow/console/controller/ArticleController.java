@@ -17,7 +17,7 @@ public class ArticleController {
                          @RequestParam("title") String title,
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
-                         @RequestParam("publishTime") Integer publishTime) {
+                         @RequestParam("publishTime") String publishTime) {
         Long articleId = articleService.create(coverImages, title, author, content, publishTime);
         return articleId != null ? "自增id为：" + articleId : "失败";
     }
@@ -28,7 +28,7 @@ public class ArticleController {
                          @RequestParam("title") String title,
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
-                         @RequestParam("publishTime") Integer publishTime) {
+                         @RequestParam("publishTime") String publishTime) {
         return articleService.update(articleId, coverImages, title, author, content, publishTime) ? "成功" : "失败";
     }
 
