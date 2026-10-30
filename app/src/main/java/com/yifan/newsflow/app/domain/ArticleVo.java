@@ -10,6 +10,6 @@ public class ArticleVo {
     private Long articleId;
     private String wallImage;
     private String title;
-    private Integer publishTime;
+    private String publishTime;
 
 }

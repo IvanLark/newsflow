@@ -14,6 +14,6 @@ public class ArticleInfoVo {
     private String title;
     private String author;
     private String content;
-    private Integer publishTime;
+    private String publishTime;
 
 }
