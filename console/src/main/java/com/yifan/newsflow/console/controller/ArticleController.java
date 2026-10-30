@@ -6,6 +6,7 @@ import com.yifan.newsflow.console.domain.ConsoleArticleVo;
 import com.yifan.newsflow.module.entity.Article;
 import com.yifan.newsflow.module.service.ArticleService;
 import com.yifan.newsflow.module.util.TimeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 public class ArticleController {
 
@@ -23,8 +25,9 @@ public class ArticleController {
     private ArticleService articleService;
 
     @RequestMapping("/article/list")
-    public ConsoleArticleListVo list(@RequestParam("page") int page) {
-        List<Article> articles = articleService.pageForConsole(page);
+    public ConsoleArticleListVo list(@RequestParam("page") int page,
+                                     @RequestParam(value = "keyword", required = false) String keyword) {
+        List<Article> articles = articleService.pageForConsole(page, keyword);
         List<ConsoleArticleVo> list = new ArrayList<>();
         for (Article article : articles) {
             list.add(new ConsoleArticleVo()
@@ -37,7 +40,7 @@ public class ArticleController {
         }
         return new ConsoleArticleListVo()
                 .setList(list)
-                .setTotal(articleService.countAll())
+                .setTotal(articleService.countAll(keyword))
                 .setPageSize(ArticleService.PAGE_SIZE);
     }
 
@@ -63,9 +66,15 @@ public class ArticleController {
                          @RequestParam("title") String title,
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
-                         @RequestParam("publishTime") Integer publishTime) {
-        Long articleId = articleService.create(coverImages, title, author, content, publishTime);
-        return articleId != null ? "自增id为：" + articleId : "失败";
+                         @RequestParam("publishTime") String publishTime) {
+        Long articleId;
+        try {
+            articleId = articleService.edit(null, coverImages, title.trim(), author.trim(), content, publishTime);
+        } catch (RuntimeException e) {
+            log.error("新增文章失败", e);
+            return "新增失败、" + e.getMessage();
+        }
+        return String.valueOf(articleId);
     }
 
     @RequestMapping("/article/update")
@@ -74,8 +83,15 @@ public class ArticleController {
                          @RequestParam("title") String title,
                          @RequestParam("author") String author,
                          @RequestParam("content") String content,
-                         @RequestParam("publishTime") Integer publishTime) {
-        return articleService.update(articleId, coverImages, title, author, content, publishTime) ? "成功" : "失败";
+                         @RequestParam("publishTime") String publishTime) {
+        Long updatedId;
+        try {
+            updatedId = articleService.edit(articleId, coverImages, title.trim(), author.trim(), content, publishTime);
+        } catch (RuntimeException e) {
+            log.error("修改文章失败", e);
+            return "更新失败、" + e.getMessage();
+        }
+        return String.valueOf(updatedId);
     }
 
     @RequestMapping("/article/delete")
