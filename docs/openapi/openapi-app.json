@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NewsFlow APP 接口文档",
-    "description": "NewsFlow APP 的接口定义，对应 docs/接口设计文档-V1.0.md 的 APP 部分。",
-    "version": "1.0.0"
+    "description": "NewsFlow APP 的接口定义，对应 docs/接口设计文档.md 的 APP 部分。",
+    "version": "1.2.0"
   },
   "servers": [
     {
@@ -19,21 +19,27 @@
   ],
   "paths": {
     "/article/list": {
-      "servers": [
-        {
-          "url": "http://localhost:8080"
-        }
-      ],
       "get": {
         "tags": [
           "app"
         ],
         "summary": "文章列表",
         "operationId": "articleList",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "description": "页码，从 1 开始",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "成功",
+            "description": "成功，isEnd 为 true 表示没有下一页，publishTime 格式为 MM-dd",
             "content": {
               "application/json": {
                 "schema": {
@@ -47,7 +53,8 @@
                       "title": "示例标题",
                       "publishTime": "10-29"
                     }
-                  ]
+                  ],
+                  "isEnd": false
                 }
               }
             }
@@ -56,11 +63,6 @@
       }
     },
     "/article/info": {
-      "servers": [
-        {
-          "url": "http://localhost:8080"
-        }
-      ],
       "get": {
         "tags": [
           "app"
@@ -81,7 +83,7 @@
         ],
         "responses": {
           "200": {
-            "description": "成功",
+            "description": "成功，publishTime 格式为 yyyy-MM-dd",
             "content": {
               "application/json": {
                 "schema": {
@@ -138,7 +140,8 @@
       "ArticleListVo": {
         "type": "object",
         "required": [
-          "list"
+          "list",
+          "isEnd"
         ],
         "properties": {
           "list": {
@@ -147,6 +150,10 @@
             "items": {
               "$ref": "#/components/schemas/ArticleVo"
             }
+          },
+          "isEnd": {
+            "type": "boolean",
+            "description": "是否已经没有下一页"
           }
         }
       },
