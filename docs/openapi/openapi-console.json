@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NewsFlow CONSOLE 接口文档",
-    "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口设计文档-V1.0.md 的 CONSOLE 部分。",
-    "version": "1.0.0"
+    "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口设计文档.md 的 CONSOLE 部分。",
+    "version": "1.1.0"
   },
   "servers": [
     {
@@ -81,12 +81,12 @@
         ],
         "responses": {
           "200": {
-            "description": "成功 or 失败",
+            "description": "成功返回「自增id为：xxx」，失败返回「失败」",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "string",
-                  "example": "成功"
+                  "example": "自增id为：31"
                 }
               }
             }
