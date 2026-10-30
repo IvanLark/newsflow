@@ -40,19 +40,32 @@ public class ArticleService {
         return articleMapper.getById(articleId);
     }
 
-    public Long create(Article article) {
+    public Long create(String coverImages, String title, String author, String content, Integer publishTime) {
         int now = TimeUtils.currentSeconds();
-        article.setCreateTime(now)
+        Article article = new Article()
+                .setCoverImages(coverImages)
+                .setTitle(title)
+                .setAuthor(author)
+                .setContent(content)
+                .setPublishTime(publishTime)
+                .setCreateTime(now)
                 .setUpdateTime(now)
                 .setIsDeleted(0);
-        log.info("新增文章，title={}", article.getTitle());
+        log.info("新增文章，title={}", title);
         return articleMapper.insert(article) > 0 ? article.getId() : null;
     }
 
-    public boolean update(Article article) {
-        article.setUpdateTime(TimeUtils.currentSeconds())
+    public boolean update(Long articleId, String coverImages, String title, String author, String content, Integer publishTime) {
+        Article article = new Article()
+                .setId(articleId)
+                .setCoverImages(coverImages)
+                .setTitle(title)
+                .setAuthor(author)
+                .setContent(content)
+                .setPublishTime(publishTime)
+                .setUpdateTime(TimeUtils.currentSeconds())
                 .setIsDeleted(0);
-        log.info("修改文章，articleId={}", article.getId());
+        log.info("修改文章，articleId={}", articleId);
         return articleMapper.update(article) > 0;
     }
 
