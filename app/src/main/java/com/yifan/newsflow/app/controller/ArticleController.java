@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ArticleController {
@@ -33,9 +35,13 @@ public class ArticleController {
                               @RequestParam(value = "keyword", required = false) String keyword) {
         List<Article> articles = articleService.pageForApp(page, keyword);
         Boolean isEnd = articles.size() < ArticleService.PAGE_SIZE;
+        Map<Long, Category> categoryMap = new HashMap<>();
+        for (Category category : categoryService.listAll()) {
+            categoryMap.put(category.getId(), category);
+        }
         List<ArticleVo> list = new ArrayList<>();
         for (Article article : articles) {
-            Category category = categoryService.getById(article.getCategoryId());
+            Category category = categoryMap.get(article.getCategoryId());
             if (category == null) {
                 continue;
             }
@@ -59,7 +65,8 @@ public class ArticleController {
         }
         Category category = categoryService.getById(article.getCategoryId());
         if (category == null) {
-            throw new RuntimeException("category not found: " + article.getCategoryId());
+            // TODO 后续改造全局异常处理器之后再来处理分类不存在的情况
+            return null;
         }
         return new ArticleInfoVo()
                 .setArticleId(article.getId())

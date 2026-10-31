@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -33,9 +35,13 @@ public class ArticleController {
     public ConsoleArticleListVo list(@RequestParam("page") int page,
                                      @RequestParam(value = "keyword", required = false) String keyword) {
         List<Article> articles = articleService.pageForConsole(page, keyword);
+        Map<Long, Category> categoryMap = new HashMap<>();
+        for (Category category : categoryService.listAll()) {
+            categoryMap.put(category.getId(), category);
+        }
         List<ConsoleArticleVo> list = new ArrayList<>();
         for (Article article : articles) {
-            Category category = categoryService.getById(article.getCategoryId());
+            Category category = categoryMap.get(article.getCategoryId());
             if (category == null) {
                 continue;
             }
@@ -62,7 +68,8 @@ public class ArticleController {
         }
         Category category = categoryService.getById(article.getCategoryId());
         if (category == null) {
-            throw new RuntimeException("category not found: " + article.getCategoryId());
+            // TODO 后续改造全局异常处理器之后再来处理分类不存在的情况
+            return null;
         }
         return new ConsoleArticleInfoVo()
                 .setArticleId(article.getId())
