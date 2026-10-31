@@ -3,7 +3,7 @@
   "info": {
     "title": "NewsFlow CONSOLE 接口文档",
     "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口设计文档.md 的 CONSOLE 部分。",
-    "version": "1.3.0"
+    "version": "1.5.0"
   },
   "servers": [
     {
@@ -60,6 +60,7 @@
                       "articleId": 30,
                       "wallImage": "https://a.com/1.jpg",
                       "title": "示例标题",
+                      "categoryName": "清洁能源",
                       "publishTime": "2026-10-03 06:00:00",
                       "createTime": "2026-10-03 05:00:00",
                       "updateTime": "2026-10-03 05:00:00"
@@ -112,7 +113,11 @@
                   "content": "示例正文",
                   "publishTime": "2026-10-29 20:00:00",
                   "createTime": "2026-10-29 19:00:00",
-                  "updateTime": "2026-10-29 19:00:00"
+                  "updateTime": "2026-10-29 19:00:00",
+                  "categoryId": 1,
+                  "categoryName": "清洁能源",
+                  "categoryImage": "https://a.com/category-1.jpg",
+                  "categoryDescription": "聚焦新型储能、光伏与深远海风电"
                 }
               }
             }
@@ -173,6 +178,16 @@
               "type": "string",
               "format": "date",
               "example": "2026-10-29"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": true,
+            "description": "分类 ID，必须是未删除的分类",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
             }
           }
         ],
@@ -255,6 +270,16 @@
               "format": "date",
               "example": "2026-10-29"
             }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": true,
+            "description": "分类 ID，必须是未删除的分类",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -305,6 +330,226 @@
           }
         }
       }
+    },
+    "/category/list": {
+      "get": {
+        "tags": [
+          "console"
+        ],
+        "summary": "分类列表",
+        "operationId": "consoleCategoryList",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsoleCategoryListVo"
+                },
+                "example": {
+                  "list": [
+                    {
+                      "categoryId": 1,
+                      "name": "清洁能源",
+                      "image": "https://a.com/category-1.jpg",
+                      "description": "聚焦新型储能、光伏与深远海风电",
+                      "createTime": "2026-10-03 05:00:00",
+                      "updateTime": "2026-10-03 05:00:00"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/info": {
+      "get": {
+        "tags": [
+          "console"
+        ],
+        "summary": "分类详情",
+        "operationId": "consoleCategoryInfo",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": true,
+            "description": "分类 ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功，时间字段格式为 yyyy-MM-dd HH:mm:ss",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsoleCategoryVo"
+                },
+                "example": {
+                  "categoryId": 1,
+                  "name": "清洁能源",
+                  "image": "https://a.com/category-1.jpg",
+                  "description": "聚焦新型储能、光伏与深远海风电",
+                  "createTime": "2026-10-03 05:00:00",
+                  "updateTime": "2026-10-03 05:00:00"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/create": {
+      "get": {
+        "tags": [
+          "console"
+        ],
+        "summary": "分类新增",
+        "operationId": "categoryCreate",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "description": "分类名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "image",
+            "in": "query",
+            "required": true,
+            "description": "分类图 URL",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "required": false,
+            "description": "分类描述",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功返回分类 id，失败返回「新增失败：错误信息」",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "5"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/update": {
+      "get": {
+        "tags": [
+          "console"
+        ],
+        "summary": "分类修改",
+        "operationId": "categoryUpdate",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": true,
+            "description": "分类 ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "description": "分类名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "image",
+            "in": "query",
+            "required": true,
+            "description": "分类图 URL",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "required": true,
+            "description": "分类描述",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功返回分类 id，失败返回「更新失败：错误信息」",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "5"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/delete": {
+      "get": {
+        "tags": [
+          "console"
+        ],
+        "summary": "分类删除",
+        "operationId": "categoryDelete",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": true,
+            "description": "分类 ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功返回「成功」，失败返回「失败」",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "成功"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -332,6 +577,10 @@
           "title": {
             "type": "string",
             "description": "标题"
+          },
+          "categoryName": {
+            "type": "string",
+            "description": "分类名称"
           },
           "publishTime": {
             "type": "string",
@@ -384,7 +633,11 @@
           "content",
           "publishTime",
           "createTime",
-          "updateTime"
+          "updateTime",
+          "categoryId",
+          "categoryName",
+          "categoryImage",
+          "categoryDescription"
         ],
         "properties": {
           "articleId": {
@@ -422,6 +675,76 @@
           "updateTime": {
             "type": "string",
             "description": "更新时间，格式 yyyy-MM-dd HH:mm:ss"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "分类 ID"
+          },
+          "categoryName": {
+            "type": "string",
+            "description": "分类名称"
+          },
+          "categoryImage": {
+            "type": "string",
+            "description": "分类图 URL"
+          },
+          "categoryDescription": {
+            "type": "string",
+            "description": "分类描述"
+          }
+        }
+      },
+      "ConsoleCategoryVo": {
+        "type": "object",
+        "required": [
+          "categoryId",
+          "name",
+          "image",
+          "description",
+          "createTime",
+          "updateTime"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "分类 ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "分类名称"
+          },
+          "image": {
+            "type": "string",
+            "description": "分类图 URL"
+          },
+          "description": {
+            "type": "string",
+            "description": "分类描述"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间，格式 yyyy-MM-dd HH:mm:ss"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "更新时间，格式 yyyy-MM-dd HH:mm:ss"
+          }
+        }
+      },
+      "ConsoleCategoryListVo": {
+        "type": "object",
+        "required": [
+          "list"
+        ],
+        "properties": {
+          "list": {
+            "type": "array",
+            "description": "分类列表",
+            "items": {
+              "$ref": "#/components/schemas/ConsoleCategoryVo"
+            }
           }
         }
       }
