@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yifan.newsflow.module.mapper.TempStudentMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="tempStudent.id">
+        INSERT INTO temp_student(
+        <if test="tempStudent.name != null and tempStudent.name != ''">name,</if>
+        <if test="tempStudent.age != null">age,</if>
+        <if test="tempStudent.className != null and tempStudent.className != ''">class_name,</if>
+        <if test="tempStudent.createTime != null">create_time,</if>
+        <if test="tempStudent.updateTime != null">update_time,</if>
+        is_deleted
+        ) VALUES (
+        <if test="tempStudent.name != null and tempStudent.name != ''">#{tempStudent.name},</if>
+        <if test="tempStudent.age != null">#{tempStudent.age},</if>
+        <if test="tempStudent.className != null and tempStudent.className != ''">#{tempStudent.className},</if>
+        <if test="tempStudent.createTime != null">#{tempStudent.createTime},</if>
+        <if test="tempStudent.updateTime != null">#{tempStudent.updateTime},</if>
+        #{tempStudent.isDeleted}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE temp_student
+        <set>
+            <if test="tempStudent.name != null and tempStudent.name != ''">name = #{tempStudent.name},</if>
+            <if test="tempStudent.age != null">age = #{tempStudent.age},</if>
+            <if test="tempStudent.className != null and tempStudent.className != ''">class_name = #{tempStudent.className},</if>
+            <if test="tempStudent.updateTime != null">update_time = #{tempStudent.updateTime},</if>
+            is_deleted = #{tempStudent.isDeleted}
+        </set>
+        WHERE id = #{tempStudent.id}
+    </update>
+
+</mapper>

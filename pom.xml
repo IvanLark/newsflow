@@ -26,6 +26,7 @@
     <properties>
         <java.version>25</java.version>
         <mybatis-plus.version>3.5.18</mybatis-plus.version>
+        <freemarker.version>2.3.34</freemarker.version>
     </properties>
 
     <dependencies>
