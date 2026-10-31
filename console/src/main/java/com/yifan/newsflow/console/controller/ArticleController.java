@@ -1,5 +1,6 @@
 package com.yifan.newsflow.console.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yifan.newsflow.console.domain.ConsoleArticleInfoVo;
 import com.yifan.newsflow.console.domain.ConsoleArticleListVo;
 import com.yifan.newsflow.console.domain.ConsoleArticleVo;
@@ -27,7 +28,8 @@ public class ArticleController {
     @RequestMapping("/article/list")
     public ConsoleArticleListVo list(@RequestParam("page") int page,
                                      @RequestParam(value = "keyword", required = false) String keyword) {
-        List<Article> articles = articleService.pageForConsole(page, keyword);
+        IPage<Article> pageData = articleService.pageForConsole(page, keyword);
+        List<Article> articles = pageData.getRecords();
         List<ConsoleArticleVo> list = new ArrayList<>();
         for (Article article : articles) {
             list.add(new ConsoleArticleVo()
@@ -40,7 +42,7 @@ public class ArticleController {
         }
         return new ConsoleArticleListVo()
                 .setList(list)
-                .setTotal(articleService.countAll(keyword))
+                .setTotal(pageData.getTotal())
                 .setPageSize(ArticleService.PAGE_SIZE);
     }
 

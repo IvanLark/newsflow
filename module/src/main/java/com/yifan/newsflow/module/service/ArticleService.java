@@ -1,13 +1,15 @@
 package com.yifan.newsflow.module.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yifan.newsflow.module.entity.Article;
 import com.yifan.newsflow.module.mapper.ArticleMapper;
 import com.yifan.newsflow.module.util.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -20,31 +22,37 @@ public class ArticleService {
     @Autowired
     private ArticleMapper articleMapper;
 
-    public List<Article> pageForApp(int page, String keyword) {
-        int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
-        log.info("查询 APP 文章列表，page={}, offset={}, keyword={}", page, offset, keyword);
-        return articleMapper.pageForApp(offset, PAGE_SIZE, keyword);
+    public IPage<Article> pageForApp(int page, String keyword) {
+        log.info("查询 APP 文章列表，page={}, keyword={}", page, keyword);
+        Page<Article> pageParam = new Page<>(Math.max(page, 1), PAGE_SIZE);
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<Article>()
+                .eq(Article::getIsDeleted, 0)
+                .like(hasKeyword(keyword), Article::getTitle, keyword)
+                .orderByDesc(Article::getPublishTime)
+                .orderByDesc(Article::getId);
+        return articleMapper.selectPage(pageParam, wrapper);
     }
 
-    public List<Article> pageForConsole(int page, String keyword) {
-        int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
-        log.info("查询后台文章列表，page={}, offset={}, keyword={}", page, offset, keyword);
-        return articleMapper.pageForConsole(offset, PAGE_SIZE, keyword);
-    }
-
-    public long countAll(String keyword) {
-        log.info("统计文章总数，keyword={}", keyword);
-        return articleMapper.countAll(keyword);
+    public IPage<Article> pageForConsole(int page, String keyword) {
+        log.info("查询后台文章列表，page={}, keyword={}", page, keyword);
+        Page<Article> pageParam = new Page<>(Math.max(page, 1), PAGE_SIZE);
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<Article>()
+                .eq(Article::getIsDeleted, 0)
+                .like(hasKeyword(keyword), Article::getTitle, keyword)
+                .orderByDesc(Article::getId);
+        return articleMapper.selectPage(pageParam, wrapper);
     }
 
     public Article getById(Long articleId) {
         log.info("查询文章详情，articleId={}", articleId);
-        return articleMapper.getById(articleId);
+        return articleMapper.selectOne(new LambdaQueryWrapper<Article>()
+                .eq(Article::getId, articleId)
+                .eq(Article::getIsDeleted, 0));
     }
 
     public Article extractById(Long articleId) {
         log.info("提取文章记录，articleId={}", articleId);
-        return articleMapper.extractById(articleId);
+        return articleMapper.selectById(articleId);
     }
 
     public int insert(Article article) {
@@ -54,12 +62,17 @@ public class ArticleService {
 
     public int update(Article article) {
         log.info("更新文章，articleId={}", article.getId());
-        return articleMapper.update(article);
+        return articleMapper.updateById(article);
     }
 
     public boolean delete(Long articleId) {
         log.info("删除文章，articleId={}", articleId);
-        return articleMapper.delete(articleId, TimeUtils.currentSeconds()) > 0;
+        LambdaUpdateWrapper<Article> wrapper = new LambdaUpdateWrapper<Article>()
+                .eq(Article::getId, articleId)
+                .eq(Article::getIsDeleted, 0)
+                .set(Article::getIsDeleted, 1)
+                .set(Article::getUpdateTime, TimeUtils.currentSeconds());
+        return articleMapper.update(null, wrapper) > 0;
     }
 
     public Long edit(Long articleId, String coverImages, String title, String author, String content, String publishTime) {
@@ -108,6 +121,10 @@ public class ArticleService {
             throw new RuntimeException("update article failed: " + articleId);
         }
         return articleId;
+    }
+
+    private boolean hasKeyword(String keyword) {
+        return keyword != null && !keyword.isEmpty();
     }
 
 }

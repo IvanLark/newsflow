@@ -1,5 +1,6 @@
 package com.yifan.newsflow.app.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.yifan.newsflow.app.domain.ArticleInfoVo;
 import com.yifan.newsflow.app.domain.ArticleListVo;
 import com.yifan.newsflow.app.domain.ArticleVo;
@@ -26,7 +27,8 @@ public class ArticleController {
     @RequestMapping("/article/list")
     public ArticleListVo list(@RequestParam("page") int page,
                               @RequestParam(value = "keyword", required = false) String keyword) {
-        List<Article> articles = articleService.pageForApp(page, keyword);
+        IPage<Article> pageData = articleService.pageForApp(page, keyword);
+        List<Article> articles = pageData.getRecords();
         Boolean isEnd = articles.size() < ArticleService.PAGE_SIZE;
         List<ArticleVo> list = new ArrayList<>();
         for (Article article : articles) {

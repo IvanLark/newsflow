@@ -25,7 +25,7 @@
 
     <properties>
         <java.version>25</java.version>
-        <mybatis-spring-boot.version>4.0.1</mybatis-spring-boot.version>
+        <mybatis-plus.version>3.5.18</mybatis-plus.version>
     </properties>
 
     <dependencies>
