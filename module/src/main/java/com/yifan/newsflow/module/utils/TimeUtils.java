@@ -1,4 +1,4 @@
-package com.yifan.newsflow.module.util;
+package com.yifan.newsflow.module.utils;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;

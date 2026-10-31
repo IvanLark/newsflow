@@ -3,7 +3,7 @@
   "info": {
     "title": "NewsFlow APP 接口文档",
     "description": "NewsFlow APP 的接口定义，对应 docs/接口设计文档.md 的 APP 部分。",
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "servers": [
     {
@@ -58,7 +58,10 @@
                   "list": [
                     {
                       "articleId": 1,
-                      "wallImage": "https://a.com/1.jpg",
+                      "wallImage": {
+                        "url": "https://a.com/1.jpg",
+                        "ar": 1.33
+                      },
                       "title": "示例标题",
                       "categoryName": "清洁能源",
                       "publishTime": "10-29"
@@ -169,8 +172,23 @@
             "description": "文章 ID"
           },
           "wallImage": {
-            "type": "string",
-            "description": "轮播图第一张"
+            "type": "object",
+            "required": [
+              "url",
+              "ar"
+            ],
+            "description": "轮播图第一张",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "图片地址"
+              },
+              "ar": {
+                "type": "number",
+                "format": "float",
+                "description": "宽高比，取不到时为 0"
+              }
+            }
           },
           "title": {
             "type": "string",

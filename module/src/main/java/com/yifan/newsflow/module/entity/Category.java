@@ -1,6 +1,6 @@
 package com.yifan.newsflow.module.entity;
 
-import com.yifan.newsflow.module.util.TimeUtils;
+import com.yifan.newsflow.module.utils.TimeUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

@@ -7,7 +7,7 @@ import com.yifan.newsflow.module.entity.Article;
 import com.yifan.newsflow.module.entity.Category;
 import com.yifan.newsflow.module.service.ArticleService;
 import com.yifan.newsflow.module.service.CategoryService;
-import com.yifan.newsflow.module.util.TimeUtils;
+import com.yifan.newsflow.module.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -2,7 +2,7 @@ package com.yifan.newsflow.module.service;
 
 import com.yifan.newsflow.module.entity.Category;
 import com.yifan.newsflow.module.mapper.CategoryMapper;
-import com.yifan.newsflow.module.util.TimeUtils;
+import com.yifan.newsflow.module.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

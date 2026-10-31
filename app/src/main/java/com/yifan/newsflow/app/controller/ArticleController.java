@@ -3,11 +3,14 @@ package com.yifan.newsflow.app.controller;
 import com.yifan.newsflow.app.domain.ArticleInfoVo;
 import com.yifan.newsflow.app.domain.ArticleListVo;
 import com.yifan.newsflow.app.domain.ArticleVo;
+import com.yifan.newsflow.app.domain.ArticleWallImageVo;
 import com.yifan.newsflow.module.entity.Article;
 import com.yifan.newsflow.module.entity.Category;
 import com.yifan.newsflow.module.service.ArticleService;
 import com.yifan.newsflow.module.service.CategoryService;
-import com.yifan.newsflow.module.util.TimeUtils;
+import com.yifan.newsflow.module.service.OssService;
+import com.yifan.newsflow.module.utils.ImageUtils;
+import com.yifan.newsflow.module.utils.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +33,9 @@ public class ArticleController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private OssService ossService;
+
     @RequestMapping("/article/list")
     public ArticleListVo list(@RequestParam("page") int page,
                               @RequestParam(value = "keyword", required = false) String keyword) {
@@ -47,7 +53,7 @@ public class ArticleController {
             }
             list.add(new ArticleVo()
                     .setArticleId(article.getId())
-                    .setWallImage(article.getCoverImages().split("\\$")[0])
+                    .setWallImage(wallImageOf(article))
                     .setTitle(article.getTitle())
                     .setCategoryName(category.getName())
                     .setPublishTime(TimeUtils.format(article.getPublishTime(), LIST_TIME_PATTERN)));
@@ -78,6 +84,13 @@ public class ArticleController {
                 .setCategoryImage(category.getImage())
                 .setCategoryName(category.getName())
                 .setCategoryDescription(category.getDescription());
+    }
+
+    private ArticleWallImageVo wallImageOf(Article article) {
+        String url = article.getCoverImages().split("\\$")[0];
+        return new ArticleWallImageVo()
+                .setUrl(url)
+                .setAr(ImageUtils.getAr(url, ossService));
     }
 
 }

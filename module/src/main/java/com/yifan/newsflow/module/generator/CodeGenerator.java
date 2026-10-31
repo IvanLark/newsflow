@@ -19,7 +19,7 @@ public class CodeGenerator {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
     private static final String PARENT_PACKAGE = "com.yifan.newsflow.module";
-    private static final String TABLE_NAME = "category";
+    private static final String TABLE_NAME = "file";
     private static final String ENTITY_TEMPLATE = "/templates/newsflow/entity.java";
     private static final String MAPPER_TEMPLATE = "/templates/newsflow/mapper.java";
     private static final String MAPPER_XML_TEMPLATE = "/templates/newsflow/mapper.xml";
@@ -46,9 +46,9 @@ public class CodeGenerator {
                         .pathInfo(Map.of(OutputFile.xml, xmlDir)))
                 .strategyConfig(builder -> builder
                         .addInclude(TABLE_NAME)
-                        .entityBuilder().javaTemplate(ENTITY_TEMPLATE).enableFileOverride()
-                        .mapperBuilder().mapperTemplate(MAPPER_TEMPLATE).mapperXmlTemplate(MAPPER_XML_TEMPLATE).enableFileOverride()
-                        .serviceBuilder().serviceTemplate(SERVICE_TEMPLATE).formatServiceFileName("%sService")
+                        .entityBuilder().javaTemplate(ENTITY_TEMPLATE).formatFileName("FileRecord").enableFileOverride()
+                        .mapperBuilder().mapperTemplate(MAPPER_TEMPLATE).mapperXmlTemplate(MAPPER_XML_TEMPLATE).formatMapperFileName("FileRecordMapper").formatXmlFileName("FileRecordMapper").enableFileOverride()
+                        .serviceBuilder().serviceTemplate(SERVICE_TEMPLATE).formatServiceFileName("FileRecordService")
                         .disableServiceImpl()
                         .enableFileOverride()
                         .controllerBuilder().disable())

@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 public class ArticleVo {
 
     private Long articleId;
-    private String wallImage;
+    private ArticleWallImageVo wallImage;
     private String title;
     private String categoryName;
     private String publishTime;

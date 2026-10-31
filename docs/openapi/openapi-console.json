@@ -3,7 +3,7 @@
   "info": {
     "title": "NewsFlow CONSOLE 接口文档",
     "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口设计文档.md 的 CONSOLE 部分。",
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "servers": [
     {
@@ -434,7 +434,7 @@
           {
             "name": "description",
             "in": "query",
-            "required": false,
+            "required": true,
             "description": "分类描述",
             "schema": {
               "type": "string"
@@ -544,6 +544,53 @@
                 "schema": {
                   "type": "string",
                   "example": "成功"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/utils/upload": {
+      "post": {
+        "tags": [
+          "console"
+        ],
+        "summary": "文件上传",
+        "operationId": "utilsUpload",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "file"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "integer",
+                    "description": "1 图片、2 视频、3 文件"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "上传的文件"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功返回文件 url，失败返回「上传失败：错误信息」",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "http://localhost:8081/upload/image/2610/31/873_1762000000123_800x600.jpg"
                 }
               }
             }

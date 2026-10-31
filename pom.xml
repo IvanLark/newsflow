@@ -28,6 +28,7 @@
         <mybatis-spring-boot.version>4.0.1</mybatis-spring-boot.version>
         <mybatis-plus.version>3.5.18</mybatis-plus.version>
         <freemarker.version>2.3.34</freemarker.version>
+        <aliyun-oss.version>3.18.4</aliyun-oss.version>
     </properties>
 
     <dependencies>
