@@ -12,7 +12,7 @@
 
     <groupId>com.yifan</groupId>
     <artifactId>newsflow</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>newsflow</name>
     <description>新闻流多模块项目</description>
@@ -26,6 +26,8 @@
     <properties>
         <java.version>25</java.version>
         <mybatis-spring-boot.version>4.0.1</mybatis-spring-boot.version>
+        <mybatis-plus.version>3.5.18</mybatis-plus.version>
+        <freemarker.version>2.3.34</freemarker.version>
     </properties>
 
     <dependencies>

@@ -13,6 +13,7 @@ public class Article {
     private String title;
     private String author;
     private String content;
+    private Long categoryId;
     private Integer publishTime;
     private Integer createTime;
     private Integer updateTime = TimeUtils.currentSeconds();

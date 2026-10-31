@@ -4,7 +4,9 @@ import com.yifan.newsflow.app.domain.ArticleInfoVo;
 import com.yifan.newsflow.app.domain.ArticleListVo;
 import com.yifan.newsflow.app.domain.ArticleVo;
 import com.yifan.newsflow.module.entity.Article;
+import com.yifan.newsflow.module.entity.Category;
 import com.yifan.newsflow.module.service.ArticleService;
+import com.yifan.newsflow.module.service.CategoryService;
 import com.yifan.newsflow.module.util.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,9 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @RequestMapping("/article/list")
     public ArticleListVo list(@RequestParam("page") int page,
                               @RequestParam(value = "keyword", required = false) String keyword) {
@@ -30,10 +35,15 @@ public class ArticleController {
         Boolean isEnd = articles.size() < ArticleService.PAGE_SIZE;
         List<ArticleVo> list = new ArrayList<>();
         for (Article article : articles) {
+            Category category = categoryService.getById(article.getCategoryId());
+            if (category == null) {
+                continue;
+            }
             list.add(new ArticleVo()
                     .setArticleId(article.getId())
                     .setWallImage(article.getCoverImages().split("\\$")[0])
                     .setTitle(article.getTitle())
+                    .setCategoryName(category.getName())
                     .setPublishTime(TimeUtils.format(article.getPublishTime(), LIST_TIME_PATTERN)));
         }
         return new ArticleListVo()
@@ -47,13 +57,20 @@ public class ArticleController {
         if (article == null) {
             return null;
         }
+        Category category = categoryService.getById(article.getCategoryId());
+        if (category == null) {
+            throw new RuntimeException("category not found: " + article.getCategoryId());
+        }
         return new ArticleInfoVo()
                 .setArticleId(article.getId())
                 .setCoverImages(List.of(article.getCoverImages().split("\\$")))
                 .setTitle(article.getTitle())
                 .setAuthor(article.getAuthor())
                 .setContent(article.getContent())
-                .setPublishTime(TimeUtils.format(article.getPublishTime(), INFO_TIME_PATTERN));
+                .setPublishTime(TimeUtils.format(article.getPublishTime(), INFO_TIME_PATTERN))
+                .setCategoryImage(category.getImage())
+                .setCategoryName(category.getName())
+                .setCategoryDescription(category.getDescription());
     }
 
 }

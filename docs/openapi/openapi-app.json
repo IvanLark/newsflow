@@ -3,7 +3,7 @@
   "info": {
     "title": "NewsFlow APP 接口文档",
     "description": "NewsFlow APP 的接口定义，对应 docs/接口设计文档.md 的 APP 部分。",
-    "version": "1.3.0"
+    "version": "1.5.0"
   },
   "servers": [
     {
@@ -60,6 +60,7 @@
                       "articleId": 1,
                       "wallImage": "https://a.com/1.jpg",
                       "title": "示例标题",
+                      "categoryName": "清洁能源",
                       "publishTime": "10-29"
                     }
                   ],
@@ -107,7 +108,41 @@
                   "title": "示例标题",
                   "author": "示例作者",
                   "content": "示例正文",
-                  "publishTime": "2026-10-29"
+                  "publishTime": "2026-10-29",
+                  "categoryImage": "https://a.com/category-1.jpg",
+                  "categoryName": "清洁能源",
+                  "categoryDescription": "聚焦新型储能、光伏与深远海风电"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/list": {
+      "get": {
+        "tags": [
+          "app"
+        ],
+        "summary": "分类列表",
+        "operationId": "appCategoryList",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryListVo"
+                },
+                "example": {
+                  "list": [
+                    {
+                      "categoryId": 1,
+                      "name": "清洁能源",
+                      "image": "https://a.com/category-1.jpg",
+                      "description": "聚焦新型储能、光伏与深远海风电"
+                    }
+                  ]
                 }
               }
             }
@@ -124,6 +159,7 @@
           "articleId",
           "wallImage",
           "title",
+          "categoryName",
           "publishTime"
         ],
         "properties": {
@@ -139,6 +175,10 @@
           "title": {
             "type": "string",
             "description": "标题"
+          },
+          "categoryName": {
+            "type": "string",
+            "description": "分类名称"
           },
           "publishTime": {
             "type": "string",
@@ -174,7 +214,10 @@
           "title",
           "author",
           "content",
-          "publishTime"
+          "publishTime",
+          "categoryImage",
+          "categoryName",
+          "categoryDescription"
         ],
         "properties": {
           "articleId": {
@@ -204,6 +247,61 @@
           "publishTime": {
             "type": "string",
             "description": "发布时间，格式 yyyy-MM-dd"
+          },
+          "categoryImage": {
+            "type": "string",
+            "description": "分类图 URL"
+          },
+          "categoryName": {
+            "type": "string",
+            "description": "分类名称"
+          },
+          "categoryDescription": {
+            "type": "string",
+            "description": "分类描述"
+          }
+        }
+      },
+      "CategoryVo": {
+        "type": "object",
+        "required": [
+          "categoryId",
+          "name",
+          "image",
+          "description"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "分类 ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "分类名称"
+          },
+          "image": {
+            "type": "string",
+            "description": "分类图 URL"
+          },
+          "description": {
+            "type": "string",
+            "description": "分类描述"
+          }
+        }
+      },
+      "CategoryListVo": {
+        "type": "object",
+        "required": [
+          "list"
+        ],
+        "properties": {
+          "list": {
+            "type": "array",
+            "description": "分类列表",
+            "items": {
+              "$ref": "#/components/schemas/CategoryVo"
+            }
           }
         }
       }

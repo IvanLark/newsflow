@@ -10,6 +10,7 @@ public class ConsoleArticleVo {
     private Long articleId;
     private String wallImage;
     private String title;
+    private String categoryName;
     private String publishTime;
     private String createTime;
     private String updateTime;
