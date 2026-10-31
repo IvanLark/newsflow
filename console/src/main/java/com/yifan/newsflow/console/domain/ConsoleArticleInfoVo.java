@@ -17,5 +17,9 @@ public class ConsoleArticleInfoVo {
     private String publishTime;
     private String createTime;
     private String updateTime;
+    private Long categoryId;
+    private String categoryName;
+    private String categoryImage;
+    private String categoryDescription;
 
 }

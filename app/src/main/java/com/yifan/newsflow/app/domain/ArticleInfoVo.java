@@ -15,5 +15,8 @@ public class ArticleInfoVo {
     private String author;
     private String content;
     private String publishTime;
+    private String categoryImage;
+    private String categoryName;
+    private String categoryDescription;
 
 }

@@ -4,22 +4,30 @@
 <mapper namespace="com.yifan.newsflow.module.mapper.ArticleMapper">
 
     <select id="pageForApp" resultType="com.yifan.newsflow.module.entity.Article">
-        SELECT id, cover_images, title, author, content, publish_time, create_time, update_time, is_deleted
+        SELECT id, cover_images, title, author, content, category_id, publish_time, create_time, update_time, is_deleted
         FROM article
         WHERE is_deleted = 0
         <if test="keyword != null and keyword != ''">
-            AND title LIKE CONCAT('%', #{keyword}, '%')
+            AND (title LIKE CONCAT('%', #{keyword}, '%')
+            <if test="categoryIds != null and categoryIds != ''">
+                OR category_id IN (${categoryIds})
+            </if>
+            )
         </if>
         ORDER BY publish_time DESC, id DESC
         LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="pageForConsole" resultType="com.yifan.newsflow.module.entity.Article">
-        SELECT id, cover_images, title, author, content, publish_time, create_time, update_time, is_deleted
+        SELECT id, cover_images, title, author, content, category_id, publish_time, create_time, update_time, is_deleted
         FROM article
         WHERE is_deleted = 0
         <if test="keyword != null and keyword != ''">
-            AND title LIKE CONCAT('%', #{keyword}, '%')
+            AND (title LIKE CONCAT('%', #{keyword}, '%')
+            <if test="categoryIds != null and categoryIds != ''">
+                OR category_id IN (${categoryIds})
+            </if>
+            )
         </if>
         ORDER BY id DESC
         LIMIT #{offset}, #{pageSize}
@@ -30,7 +38,11 @@
         FROM article
         WHERE is_deleted = 0
         <if test="keyword != null and keyword != ''">
-            AND title LIKE CONCAT('%', #{keyword}, '%')
+            AND (title LIKE CONCAT('%', #{keyword}, '%')
+            <if test="categoryIds != null and categoryIds != ''">
+                OR category_id IN (${categoryIds})
+            </if>
+            )
         </if>
     </select>
 
@@ -40,6 +52,7 @@
         <if test="article.title != null and article.title != ''">title,</if>
         <if test="article.author != null and article.author != ''">author,</if>
         <if test="article.content != null and article.content != ''">content,</if>
+        <if test="article.categoryId != null">category_id,</if>
         <if test="article.publishTime != null">publish_time,</if>
         <if test="article.createTime != null">create_time,</if>
         <if test="article.updateTime != null">update_time,</if>
@@ -49,6 +62,7 @@
         <if test="article.title != null and article.title != ''">#{article.title},</if>
         <if test="article.author != null and article.author != ''">#{article.author},</if>
         <if test="article.content != null and article.content != ''">#{article.content},</if>
+        <if test="article.categoryId != null">#{article.categoryId},</if>
         <if test="article.publishTime != null">#{article.publishTime},</if>
         <if test="article.createTime != null">#{article.createTime},</if>
         <if test="article.updateTime != null">#{article.updateTime},</if>
@@ -70,6 +84,9 @@
             </if>
             <if test="article.content != null and article.content != ''">
                 content = #{article.content},
+            </if>
+            <if test="article.categoryId != null">
+                category_id = #{article.categoryId},
             </if>
             <if test="article.publishTime != null">
                 publish_time = #{article.publishTime},

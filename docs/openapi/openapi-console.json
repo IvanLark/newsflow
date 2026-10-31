@@ -389,7 +389,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConsoleCategoryVo"
+                  "$ref": "#/components/schemas/ConsoleCategoryInfoVo"
                 },
                 "example": {
                   "categoryId": 1,
@@ -696,6 +696,44 @@
         }
       },
       "ConsoleCategoryVo": {
+        "type": "object",
+        "required": [
+          "categoryId",
+          "name",
+          "image",
+          "description",
+          "createTime",
+          "updateTime"
+        ],
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "分类 ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "分类名称"
+          },
+          "image": {
+            "type": "string",
+            "description": "分类图 URL"
+          },
+          "description": {
+            "type": "string",
+            "description": "分类描述"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间，格式 yyyy-MM-dd HH:mm:ss"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "更新时间，格式 yyyy-MM-dd HH:mm:ss"
+          }
+        }
+      },
+      "ConsoleCategoryInfoVo": {
         "type": "object",
         "required": [
           "categoryId",

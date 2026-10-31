@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -20,21 +21,24 @@ public class ArticleService {
     @Autowired
     private ArticleMapper articleMapper;
 
+    @Autowired
+    private CategoryService categoryService;
+
     public List<Article> pageForApp(int page, String keyword) {
         int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
         log.info("查询 APP 文章列表，page={}, offset={}, keyword={}", page, offset, keyword);
-        return articleMapper.pageForApp(offset, PAGE_SIZE, keyword);
+        return articleMapper.pageForApp(offset, PAGE_SIZE, keyword, categoryIds(keyword));
     }
 
     public List<Article> pageForConsole(int page, String keyword) {
         int offset = (Math.max(page, 1) - 1) * PAGE_SIZE;
         log.info("查询后台文章列表，page={}, offset={}, keyword={}", page, offset, keyword);
-        return articleMapper.pageForConsole(offset, PAGE_SIZE, keyword);
+        return articleMapper.pageForConsole(offset, PAGE_SIZE, keyword, categoryIds(keyword));
     }
 
     public long countAll(String keyword) {
         log.info("统计文章总数，keyword={}", keyword);
-        return articleMapper.countAll(keyword);
+        return articleMapper.countAll(keyword, categoryIds(keyword));
     }
 
     public Article getById(Long articleId) {
@@ -62,7 +66,18 @@ public class ArticleService {
         return articleMapper.delete(articleId, TimeUtils.currentSeconds()) > 0;
     }
 
-    public Long edit(Long articleId, String coverImages, String title, String author, String content, String publishTime) {
+    public int deleteByCategoryId(Long categoryId) {
+        log.info("删除分类下的文章，categoryId={}", categoryId);
+        int count = 0;
+        for (Article article : articleMapper.listByCategoryId(categoryId)) {
+            if (delete(article.getId())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public Long edit(Long articleId, String coverImages, String title, String author, String content, String publishTime, Long categoryId) {
         if (coverImages == null || coverImages.isBlank()) {
             throw new RuntimeException("cover images is required");
         }
@@ -78,6 +93,12 @@ public class ArticleService {
         if (publishTime == null || publishTime.isBlank()) {
             throw new RuntimeException("publish time is required");
         }
+        if (categoryId == null) {
+            throw new RuntimeException("category id is required");
+        }
+        if (categoryService.getById(categoryId) == null) {
+            throw new RuntimeException("category not found: " + categoryId);
+        }
         int publishSeconds = TimeUtils.parseDate(publishTime, PUBLISH_TIME_PATTERN);
         if (publishSeconds <= 0) {
             throw new RuntimeException("publish time must be positive");
@@ -87,6 +108,7 @@ public class ArticleService {
                 .setTitle(title)
                 .setAuthor(author)
                 .setContent(content)
+                .setCategoryId(categoryId)
                 .setPublishTime(publishSeconds)
                 .setIsDeleted(0);
         if (articleId == null) {
@@ -108,6 +130,15 @@ public class ArticleService {
             throw new RuntimeException("update article failed: " + articleId);
         }
         return articleId;
+    }
+
+    private String categoryIds(String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return "";
+        }
+        return categoryService.listIdsByName(keyword).stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
     }
 
 }
