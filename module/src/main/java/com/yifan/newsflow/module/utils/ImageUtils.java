@@ -5,16 +5,12 @@ import com.yifan.newsflow.module.service.OssService;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ImageUtils {
 
     private static final Pattern SIZE_PATTERN = Pattern.compile("_(\\d+)x(\\d+)\\.");
-
-    private static final Map<String, Float> AR_CACHE = new ConcurrentHashMap<>();
 
     private ImageUtils() {
     }
@@ -23,7 +19,7 @@ public class ImageUtils {
         if (url == null || url.isEmpty()) {
             return 0F;
         }
-        return AR_CACHE.computeIfAbsent(url, key -> computeAr(key, ossService));
+        return computeAr(url, ossService);
     }
 
     public static int[] parseSize(String url) {
