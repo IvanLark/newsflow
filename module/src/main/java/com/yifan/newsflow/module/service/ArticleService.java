@@ -41,6 +41,11 @@ public class ArticleService {
         return articleMapper.countAll(keyword, categoryIds(keyword));
     }
 
+    public List<Article> listAll() {
+        log.info("查询全部文章");
+        return articleMapper.listAll();
+    }
+
     public Article getById(Long articleId) {
         log.info("查询文章详情，articleId={}", articleId);
         return articleMapper.getById(articleId);

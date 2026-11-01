@@ -29,6 +29,10 @@ public interface ArticleMapper {
             "FROM article WHERE category_id = #{categoryId} AND is_deleted = 0")
     List<Article> listByCategoryId(@Param("categoryId") Long categoryId);
 
+    @Select("SELECT id, cover_images, title, author, content, category_id, publish_time, create_time, update_time, is_deleted " +
+            "FROM article WHERE is_deleted = 0 ORDER BY id")
+    List<Article> listAll();
+
     int insert(@Param("article") Article article);
 
     int update(@Param("article") Article article);

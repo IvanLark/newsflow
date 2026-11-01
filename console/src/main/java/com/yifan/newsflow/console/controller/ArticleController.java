@@ -1,5 +1,8 @@
 package com.yifan.newsflow.console.controller;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.listener.PageReadListener;
+import com.yifan.newsflow.console.domain.ArticleExcelVo;
 import com.yifan.newsflow.console.domain.ConsoleArticleInfoVo;
 import com.yifan.newsflow.console.domain.ConsoleArticleListVo;
 import com.yifan.newsflow.console.domain.ConsoleArticleVo;
@@ -8,16 +11,22 @@ import com.yifan.newsflow.module.entity.Category;
 import com.yifan.newsflow.module.service.ArticleService;
 import com.yifan.newsflow.module.service.CategoryService;
 import com.yifan.newsflow.module.utils.TimeUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RestController
@@ -124,6 +133,90 @@ public class ArticleController {
     @RequestMapping("/article/delete")
     public String delete(@RequestParam("articleId") Long articleId) {
         return articleService.delete(articleId) ? "成功" : "失败";
+    }
+
+    @RequestMapping("/article/export")
+    public String export(HttpServletResponse response) {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        String fileName = URLEncoder.encode("文章列表", StandardCharsets.UTF_8);
+        response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+
+        List<ArticleExcelVo> rows = new ArrayList<>();
+        for (Article article : articleService.listAll()) {
+            ArticleExcelVo row = new ArticleExcelVo();
+            row.setCoverImages(article.getCoverImages());
+            row.setTitle(article.getTitle());
+            row.setAuthor(article.getAuthor());
+            row.setContent(article.getContent());
+            row.setCategoryId(article.getCategoryId());
+            row.setPublishTime(TimeUtils.format(article.getPublishTime(), TIME_PATTERN));
+            row.setCreateTime(TimeUtils.format(article.getCreateTime(), TIME_PATTERN));
+            row.setUpdateTime(TimeUtils.format(article.getUpdateTime(), TIME_PATTERN));
+            rows.add(row);
+        }
+        try {
+            EasyExcel.write(response.getOutputStream(), ArticleExcelVo.class)
+                    .sheet("文章")
+                    .doWrite(rows);
+        } catch (Exception e) {
+            log.error("导出文章失败", e);
+            return "导出失败：" + e.getMessage();
+        }
+        log.info("导出文章完成，共 {} 条", rows.size());
+        return null;
+    }
+
+    @RequestMapping("/article/import")
+    public String importExcel(@RequestParam("file") MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return "导入失败：file is required";
+        }
+        String filename = file.getOriginalFilename();
+        if (filename == null || !(filename.toLowerCase().endsWith(".xlsx") || filename.toLowerCase().endsWith(".xls"))) {
+            return "导入失败：file must be xlsx";
+        }
+        Map<Long, Category> categoryMap = new HashMap<>();
+        for (Category category : categoryService.listAll()) {
+            categoryMap.put(category.getId(), category);
+        }
+        AtomicInteger count = new AtomicInteger();
+        try (InputStream inputStream = file.getInputStream()) {
+            EasyExcel.read(inputStream, ArticleExcelVo.class, new PageReadListener<ArticleExcelVo>(dataList -> {
+                for (ArticleExcelVo row : dataList) {
+                    if (row.getCoverImages() == null || row.getCoverImages().isBlank()
+                            || row.getTitle() == null || row.getTitle().isBlank()
+                            || row.getAuthor() == null || row.getAuthor().isBlank()
+                            || row.getContent() == null || row.getContent().isBlank()
+                            || row.getPublishTime() == null || row.getPublishTime().isBlank()) {
+                        continue;
+                    }
+                    if (row.getCategoryId() == null || !categoryMap.containsKey(row.getCategoryId())) {
+                        continue;
+                    }
+                    int now = TimeUtils.currentSeconds();
+                    Article article = new Article()
+                            .setCoverImages(row.getCoverImages())
+                            .setTitle(row.getTitle())
+                            .setAuthor(row.getAuthor())
+                            .setContent(row.getContent())
+                            .setCategoryId(row.getCategoryId())
+                            .setPublishTime(TimeUtils.parseDate(row.getPublishTime(), TIME_PATTERN))
+                            .setCreateTime(row.getCreateTime() == null || row.getCreateTime().isBlank()
+                                    ? now : TimeUtils.parseDate(row.getCreateTime(), TIME_PATTERN))
+                            .setUpdateTime(row.getUpdateTime() == null || row.getUpdateTime().isBlank()
+                                    ? now : TimeUtils.parseDate(row.getUpdateTime(), TIME_PATTERN))
+                            .setIsDeleted(0);
+                    articleService.insert(article);
+                    count.incrementAndGet();
+                }
+            })).sheet().doRead();
+        } catch (Exception e) {
+            log.error("导入文章失败", e);
+            return "导入失败：" + e.getMessage();
+        }
+        log.info("导入文章完成，共 {} 条", count.get());
+        return "导入成功：" + count.get();
     }
 
 }
