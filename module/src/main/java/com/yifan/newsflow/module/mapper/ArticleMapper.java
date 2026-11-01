@@ -35,6 +35,8 @@ public interface ArticleMapper {
 
     int insert(@Param("article") Article article);
 
+    int insertBatch(@Param("list") List<Article> articles);
+
     int update(@Param("article") Article article);
 
     @Update("UPDATE article SET is_deleted = 1, update_time = #{updateTime} " +
