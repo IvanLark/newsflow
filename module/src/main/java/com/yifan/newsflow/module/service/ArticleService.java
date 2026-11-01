@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
 public class ArticleService {
 
     public static final int PAGE_SIZE = 10;
+
+    private static final int BATCH_SIZE = 1000;
 
     private static final String PUBLISH_TIME_PATTERN = "yyyy-MM-dd";
 
@@ -41,6 +44,11 @@ public class ArticleService {
         return articleMapper.countAll(keyword, categoryIds(keyword));
     }
 
+    public List<Article> listAll() {
+        log.info("查询全部文章");
+        return articleMapper.listAll();
+    }
+
     public Article getById(Long articleId) {
         log.info("查询文章详情，articleId={}", articleId);
         return articleMapper.getById(articleId);
@@ -54,6 +62,26 @@ public class ArticleService {
     public int insert(Article article) {
         log.info("插入文章，title={}", article.getTitle());
         return articleMapper.insert(article);
+    }
+
+    public int batchInsert(List<Article> articles) {
+        if (articles == null || articles.isEmpty()) {
+            return 0;
+        }
+        log.info("批量插入文章，count={}", articles.size());
+        int count = 0;
+        List<Article> buffer = new ArrayList<>(BATCH_SIZE);
+        for (Article article : articles) {
+            buffer.add(article);
+            if (buffer.size() == BATCH_SIZE) {
+                count += articleMapper.insertBatch(buffer);
+                buffer.clear();
+            }
+        }
+        if (!buffer.isEmpty()) {
+            count += articleMapper.insertBatch(buffer);
+        }
+        return count;
     }
 
     public int update(Article article) {

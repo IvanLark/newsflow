@@ -3,7 +3,7 @@
   "info": {
     "title": "NewsFlow CONSOLE 接口文档",
     "description": "NewsFlow CONSOLE 的接口定义，对应 docs/接口设计文档.md 的 CONSOLE 部分。",
-    "version": "1.6.0"
+    "version": "2.2.0"
   },
   "servers": [
     {
@@ -591,6 +591,136 @@
                 "schema": {
                   "type": "string",
                   "example": "http://localhost:8081/upload/image/2610/31/873_1762000000123_800x600.jpg"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article/export": {
+      "get": {
+        "tags": [
+          "console"
+        ],
+        "summary": "文章导出",
+        "operationId": "articleExport",
+        "responses": {
+          "200": {
+            "description": "xlsx 文件流，不含 id 列",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article/import": {
+      "post": {
+        "tags": [
+          "console"
+        ],
+        "summary": "文章导入",
+        "operationId": "articleImport",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "xlsx 文件"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "导入成功返回导入条数，失败返回「导入失败：错误信息」",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "导入成功：1979"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article/exportZip": {
+      "get": {
+        "tags": [
+          "console"
+        ],
+        "summary": "文章导出压缩包",
+        "operationId": "articleExportZip",
+        "description": "按文章 id 模 10 分成 10 份，多线程写 xlsx 后打包成 zip，不含 id 列",
+        "responses": {
+          "200": {
+            "description": "zip 文件流，内含 10 个 xlsx 文件",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/article/importZip": {
+      "post": {
+        "tags": [
+          "console"
+        ],
+        "summary": "文章导入压缩包",
+        "operationId": "articleImportZip",
+        "description": "解压 zip，多线程读取压缩包内的 xlsx 文件后批量入库",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "zip 文件"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "导入成功返回导入条数，失败返回「导入失败：错误信息」",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "导入成功：1530"
                 }
               }
             }

@@ -70,6 +70,14 @@
         )
     </insert>
 
+    <insert id="insertBatch">
+        INSERT INTO article(cover_images, title, author, content, category_id, publish_time, create_time, update_time, is_deleted)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.coverImages}, #{item.title}, #{item.author}, #{item.content}, #{item.categoryId}, #{item.publishTime}, #{item.createTime}, #{item.updateTime}, #{item.isDeleted})
+        </foreach>
+    </insert>
+
     <update id="update">
         UPDATE article
         <set>
