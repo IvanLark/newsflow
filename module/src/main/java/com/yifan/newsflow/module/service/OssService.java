@@ -4,6 +4,7 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.yifan.newsflow.module.config.OssProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+@Slf4j
 @Service
 public class OssService {
 
@@ -35,6 +37,7 @@ public class OssService {
             inputStream.transferTo(outputStream);
             return outputStream.toByteArray();
         } catch (IOException e) {
+            log.error("读取 OSS 文件失败：{}", objectKey, e);
             throw new RuntimeException("读取 OSS 文件失败：" + objectKey, e);
         }
     }
