@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yifan.newsflow.module.mapper.FileRecordMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="fileRecord.id">
+        INSERT INTO file(
+        <if test="fileRecord.type != null">type,</if>
+        <if test="fileRecord.url != null and fileRecord.url != ''">url,</if>
+        <if test="fileRecord.createTime != null">create_time,</if>
+        <if test="fileRecord.updateTime != null">update_time,</if>
+        is_deleted
+        ) VALUES (
+        <if test="fileRecord.type != null">#{fileRecord.type},</if>
+        <if test="fileRecord.url != null and fileRecord.url != ''">#{fileRecord.url},</if>
+        <if test="fileRecord.createTime != null">#{fileRecord.createTime},</if>
+        <if test="fileRecord.updateTime != null">#{fileRecord.updateTime},</if>
+        #{fileRecord.isDeleted}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE file
+        <set>
+            <if test="fileRecord.type != null">type = #{fileRecord.type},</if>
+            <if test="fileRecord.url != null and fileRecord.url != ''">url = #{fileRecord.url},</if>
+            <if test="fileRecord.updateTime != null">update_time = #{fileRecord.updateTime},</if>
+            is_deleted = #{fileRecord.isDeleted}
+        </set>
+        WHERE id = #{fileRecord.id}
+    </update>
+
+</mapper>

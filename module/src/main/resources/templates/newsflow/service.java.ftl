@@ -2,7 +2,7 @@ package ${package.Service};
 
 import ${package.Entity}.${entity};
 import ${package.Mapper}.${table.mapperName};
-import com.yifan.newsflow.module.util.TimeUtils;
+import com.yifan.newsflow.module.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
