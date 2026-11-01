@@ -51,9 +51,12 @@ public class ArticleController {
             if (category == null) {
                 continue;
             }
+            String wallImageUrl = article.getCoverImages().split("\\$")[0];
             list.add(new ArticleVo()
                     .setArticleId(article.getId())
-                    .setWallImage(wallImageOf(article))
+                    .setWallImage(new ArticleWallImageVo()
+                            .setUrl(wallImageUrl)
+                            .setAr(ImageUtils.getAr(wallImageUrl, ossService)))
                     .setTitle(article.getTitle())
                     .setCategoryName(category.getName())
                     .setPublishTime(TimeUtils.format(article.getPublishTime(), LIST_TIME_PATTERN)));
@@ -84,13 +87,6 @@ public class ArticleController {
                 .setCategoryImage(category.getImage())
                 .setCategoryName(category.getName())
                 .setCategoryDescription(category.getDescription());
-    }
-
-    private ArticleWallImageVo wallImageOf(Article article) {
-        String url = article.getCoverImages().split("\\$")[0];
-        return new ArticleWallImageVo()
-                .setUrl(url)
-                .setAr(ImageUtils.getAr(url, ossService));
     }
 
 }
